@@ -1,0 +1,80 @@
+rules:
+  # Completeness
+  - rule_id: DQ001
+    name: beneficiary_id_not_null
+    dimension: completeness
+    severity: high
+    dataset: pde
+    field: BENE_ID
+    condition: "IS NULL"
+    
+  - rule_id: DQ002
+    name: claim_beneficiary_id_not_null
+    dimension: completeness
+    severity: high
+    dataset: claims
+    field: BENE_ID
+    condition: "IS NULL"
+
+  # Uniqueness
+  - rule_id: DQ003
+    name: duplicate_pde_event
+    dimension: uniqueness
+    severity: medium
+    dataset: pde
+    field: PDE_ID
+    condition: "duplicate"
+    
+  - rule_id: DQ004
+    name: duplicate_claim
+    dimension: uniqueness
+    severity: medium
+    dataset: claims
+    field: "CLM_ID || '-' || CLM_LINE_NUM"
+    condition: "duplicate"
+
+  # Validity
+  - rule_id: DQ005
+    name: invalid_service_date
+    dimension: validity
+    severity: high
+    dataset: pde
+    field: SRVC_DT
+    condition: "> CURRENT_DATE"
+
+  - rule_id: DQ006
+    name: invalid_claim_date
+    dimension: validity
+    severity: high
+    dataset: claims
+    field: CLM_FROM_DT
+    condition: "> CURRENT_DATE"
+
+  - rule_id: DQ007
+    name: negative_rx_cost
+    dimension: validity
+    severity: high
+    dataset: pde
+    field: TOT_RX_CST_AMT
+    condition: "< 0"
+
+  # Referential Integrity
+  - rule_id: DQ008
+    name: pde_orphan_beneficiary
+    dimension: referential_integrity
+    severity: critical
+    dataset: pde
+    reference_dataset: beneficiary
+    field: BENE_ID
+    reference_field: BENE_ID
+    condition: "not_in_reference"
+
+  - rule_id: DQ009
+    name: claim_orphan_beneficiary
+    dimension: referential_integrity
+    severity: critical
+    dataset: claims
+    reference_dataset: beneficiary
+    field: BENE_ID
+    reference_field: BENE_ID
+    condition: "not_in_reference"

@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UC10 - Data Knowledge Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+            font-size: 11pt;
+        }
+        h1 { font-size: 24pt; color: #1a5276; margin-bottom: 10px; }
+        h2 { font-size: 18pt; color: #2980b9; margin-top: 25px; border-bottom: 2px solid #eaeaea; padding-bottom: 5px; page-break-after: avoid; }
+        h3 { font-size: 14pt; color: #2c3e50; margin-top: 15px; page-break-after: avoid; }
+        p { margin: 10px 0; }
+        ul, ol { margin-top: 5px; margin-bottom: 15px; }
+        li { margin-bottom: 5px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th { background-color: #f2f3f4; color: #2c3e50; font-weight: bold; }
+        
+        .page-break { page-break-before: always; }
+        .keep-together { page-break-inside: avoid; }
+        
+        .cover { text-align: center; padding-top: 150px; }
+        .subtitle { font-size: 16pt; color: #7f8c8d; margin-bottom: 40px; }
+        .mermaid { text-align: center; margin: 20px 0; }
+        
+        .feature-box {
+            background-color: #f8f9f9;
+            border-left: 4px solid #3498db;
+            padding: 12px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+        .warning-box {
+            background-color: #fdedec;
+            border-left: 4px solid #e74c3c;
+            padding: 12px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { curve: 'basis' }
+        });
+    </script>
+</head>
+<body>
+
+<div class="cover">
+    <h1>UC10 &mdash; Data Knowledge Guide</h1>
+    <div class="subtitle">The Data Story: From Problem Statement to Anomaly Detection</div>
+    <div class="mermaid">
+        graph TD
+            B["Beneficiary"] --> D["Daily Data Behaviour"]
+            C["FFS Claims"] --> D
+            P["PDE"] --> D
+            D --> F["Features"]
+            F --> A["Anomaly Detection"]
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<h2>1. The Problem Statement &amp; UC10 Goals</h2>
+<p>Medicare data pipelines process hundreds of millions of records per day. If part of the pipeline fails, or if data quality degrades silently, downstream analytical systems will produce incorrect insights. The UC10 initiative was designed to solve this by building an autonomous anomaly detection and remediation layer.</p>
+
+<p><strong>The Challenge:</strong> Healthcare datasets are massive and highly volatile. Simple thresholds or standard deviation alerts fail because standard activity drops naturally on weekends. Furthermore, pipeline processing delays (SLA breaches) are deeply intertwined with the complexity and volume of the underlying data.</p>
+
+<p><strong>How the Data is Used:</strong> We use a sample of three foundational CMS datasets (Beneficiary, Claims, and PDE) to reconstruct the pipeline's operational and data quality behavior. By tracking the relationships and daily volumes of these datasets, we can train algorithms to distinguish between normal weekend drops, data quality failures, and systemic processing slowdowns.</p>
+
+<h2>2. The Data in One View</h2>
+<p>We rely on three core datasets to understand patient activity:</p>
+    
+<div class="keep-together">
+    <h3>Beneficiary Master</h3>
+    <ul>
+        <li><strong>What it represents:</strong> The master record of members in the sample.</li>
+        <li><strong>Grain:</strong> One row per beneficiary.</li>
+        <li><strong>Key:</strong> BENE_ID</li>
+    </ul>
+</div>
+
+<div class="keep-together">
+    <h3>FFS Claims</h3>
+    <ul>
+        <li><strong>What it represents:</strong> Medical billing activity.</li>
+        <li><strong>Grain:</strong> Claim-line level. A single hospital visit generates multiple rows.</li>
+        <li><strong>Keys:</strong> CLM_ID / CLM_LINE_NUM, linking to BENE_ID.</li>
+    </ul>
+</div>
+
+<div class="keep-together">
+    <h3>PDE (Prescription Drug Events)</h3>
+    <ul>
+        <li><strong>What it represents:</strong> Pharmacy activity.</li>
+        <li><strong>Grain:</strong> One row per prescription event.</li>
+        <li><strong>Keys:</strong> PDE_ID, linking to BENE_ID.</li>
+    </ul>
+</div>
+
+<div class="mermaid keep-together">
+    graph TD
+        B("Beneficiary<br/>Member View") -->|BENE_ID| C("FFS Claims<br/>Medical Activity")
+        B -->|BENE_ID| P("PDE<br/>Pharmacy Activity")
+</div>
+
+<div class="page-break"></div>
+
+<h2>3. Feature Engineering: Why Grain Matters</h2>
+<p>Before we can detect anomalies, we must normalize the data. The core challenge of feature engineering for UC10 was resolving the mismatched grain between the datasets.</p>
+<ul>
+    <li><strong>Beneficiary:</strong> one row = one beneficiary</li>
+    <li><strong>Claims:</strong> one row = one claim line</li>
+    <li><strong>PDE:</strong> one row = one prescription event</li>
+</ul>
+
+<p>If we monitored raw row counts, a few complex medical claims would artificially look like a massive spike in activity compared to pharmacy prescriptions. To fix this, we aggregate all activity into a <strong>Common Daily Window</strong>.</p>
+
+<div class="mermaid keep-together">
+    graph TD
+        subgraph Raw_Records [Raw Records]
+            C["Claims<br/>many lines"]
+            P["PDE<br/>one event"]
+        end
+        
+        subgraph Daily_Volume [Daily Volume]
+            CV["Daily Claim Volume"]
+            PV["Daily PDE Volume"]
+        end
+        
+        C --> CV
+        P --> PV
+        CV --> W["Common Daily Window"]
+        PV --> W
+        W --> CB["Comparable Features"]
+</div>
+
+<h2>4. The Data Story: How We Engineered the Features</h2>
+<p>Millions of raw records are impossible for a machine learning model to monitor directly. We grouped the records by date and calculated 18 critical daily metrics to form our <strong>Feature Matrix</strong>.</p>
+
+<div class="warning-box">
+    <strong>The Referential Integrity Discovery:</strong><br/>
+    During profiling, we discovered "Orphan" Claims and PDEs—records where the <code>BENE_ID</code> did not exist in the Beneficiary master table. In a traditional pipeline, these might be silently dropped. In UC10, we engineered the feature <code>cross_dataset_mismatch_rate</code> to ensure this missing relationship acts as a detectable anomaly signal.
+</div>
+
+<div class="page-break"></div>
+
+<h2>5. The Four Feature Groups</h2>
+<p>The final feature matrix is organized into four architectural groups:</p>
+
+<div class="feature-box">
+    <strong>GROUP 1: DATA QUALITY</strong><br/>
+    <strong>Goal:</strong> Detect if the data itself is invalid or missing.<br/>
+    <strong>Features:</strong> null_rate, duplicate_rate, claims_null_rate, cross_dataset_mismatch_rate, dq_violation_rate
+</div>
+
+<div class="feature-box">
+    <strong>GROUP 2: HEALTHCARE DATA VOLUME / BEHAVIOUR</strong><br/>
+    <strong>Goal:</strong> Track healthcare activity volatility and relationships.<br/>
+    <strong>Features:</strong> claim_count, pde_count, unique_beneficiary_count, unique_provider_count, claim_pde_ratio, volume_change_pct
+</div>
+
+<div class="feature-box">
+    <strong>GROUP 3: DISTRIBUTION</strong><br/>
+    <strong>Goal:</strong> Identify shifts in the clinical/financial characteristics of the data.<br/>
+    <strong>Features:</strong> median_days_supply, median_rx_cost, median_claim_amount
+</div>
+
+<div class="feature-box" style="border-color: #f39c12;">
+    <strong>GROUP 4: OPERATIONAL TELEMETRY</strong><br/>
+    <strong>Goal:</strong> Monitor if the pipeline processing SLA is degrading.<br/>
+    <strong>Features:</strong> processing_duration, throughput, failure_rate, backlog<br/>
+    <em>Note: These operational metrics are mathematically simulated for the prototype to demonstrate SLA monitoring, representing downstream systems.</em>
+</div>
+
+<h2>6. Feature &rarr; Detector Mapping</h2>
+<p>Not every anomaly looks the same. UC10 uses a Tri-Level detection architecture mapped explicitly to our feature groups.</p>
+
+<table>
+    <tr><th>Detector</th><th>Purpose</th><th>Feature Groups Used</th></tr>
+    <tr>
+        <td><strong>1. DQ Rules</strong></td>
+        <td>Detects explicit invalidation (nulls, duplicates, bad formats).</td>
+        <td>Data Quality</td>
+    </tr>
+    <tr>
+        <td><strong>2. Rolling MAD</strong></td>
+        <td>Median Absolute Deviation detects massive single-metric spikes or drops, ignoring weekend volatility.</td>
+        <td>Volume, Distribution</td>
+    </tr>
+    <tr>
+        <td><strong>3. Isolation Forest</strong></td>
+        <td>Machine Learning detects subtle, complex degradation where multiple metrics drift slightly off-trend together.</td>
+        <td>Behaviour, Operations</td>
+    </tr>
+</table>
+
+<div class="mermaid keep-together">
+    graph TD
+        A["ANOMALY"] --> DQ["DQ Rules"]
+        A --> MAD["Statistical MAD"]
+        A --> IF["Isolation Forest"]
+        
+        DQ --> D1["Missing BENE_ID"]
+        MAD --> M1["40% Volume Drop"]
+        IF --> I1["Throughput drops while Volume rises"]
+</div>
+
+<div class="page-break"></div>
+
+<h2>7. Complete Data Journey &amp; Anomaly Coverage</h2>
+<p>The resulting architecture provides comprehensive coverage against all critical failure modes.</p>
+
+<table>
+    <tr><th>Problem Scenario</th><th>Primary Feature Flagged</th><th>Primary Detector</th></tr>
+    <tr><td>Missing Identifiers</td><td><code>null_rate</code></td><td>DQ Rules</td></tr>
+    <tr><td>Duplicate Records</td><td><code>duplicate_rate</code></td><td>DQ Rules</td></tr>
+    <tr><td>Orphan Claims</td><td><code>cross_dataset_mismatch_rate</code></td><td>DQ Rules / MAD</td></tr>
+    <tr><td>Unexpected Missing Data</td><td><code>claim_count</code> / <code>pde_count</code></td><td>Statistical MAD</td></tr>
+    <tr><td>Silent System Slowdown</td><td><code>throughput</code> + <code>backlog</code></td><td>Isolation Forest</td></tr>
+</table>
+
+<div class="mermaid keep-together" style="margin-top: 30px;">
+    graph TD
+        subgraph RawData [RAW DATA]
+            H1["Beneficiary"]
+            H2["FFS Claims"]
+            H3["PDE"]
+        end
+        
+        RawData --> DQ_PROF["Aggregation & Feature Engineering"]
+        DQ_PROF --> MAT["DAILY FEATURE MATRIX"]
+        
+        MAT --> D1["DQ Engine"]
+        MAT --> M1["MAD Engine"]
+        MAT --> I1["ML Engine"]
+        
+        D1 --> EF["Evidence Fusion"]
+        M1 --> EF
+        I1 --> EF
+        
+        EF --> AA["Anomaly Assessment & SLA Risk"]
+        AA --> RAG["RAG Remediation Engine"]
+</div>
+
+<div class="keep-together" style="margin-top: 40px; text-align: center; font-size: 16pt; color: #27ae60; font-weight: bold; border: 2px solid #27ae60; padding: 20px; border-radius: 5px;">
+    The data layer is now fully mapped, engineered, and frozen. <br/>It successfully drives the UC10 autonomous detection architecture.
+</div>
+
+</body>
+</html>

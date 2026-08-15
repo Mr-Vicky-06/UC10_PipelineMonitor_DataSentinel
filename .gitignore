@@ -1,0 +1,21 @@
+# Data folders
+data/raw/
+data/optional/
+scratch/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+.ipynb_checkpoints/

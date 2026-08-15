@@ -1,0 +1,7 @@
+feature_name,definition,source,type,data_type,expected_range,why_it_matters,possible_anomaly,detector
+record_count,Total rows in batch,All,Derived,Integer,>0,Baseline volume,Volume drop/spike,Stat/IF
+unique_provider_count,Distinct NPIs,Part D,Derived,Integer,>0,Provider activity,Missing providers,IF
+missing_rate_npi,% missing NPI,Part D,Derived,Float,0.0,Data integrity,Schema break,IF
+processing_duration,Batch time (ms),Pipeline,Simulated,Integer,>0,Performance,Slowdown,IF
+throughput,Recs/sec,Pipeline,Simulated,Float,>0,Performance,Degradation,IF
+failure_rate,% fatal errors,Pipeline,Simulated,Float,0.0,Stability,High rejection,IF

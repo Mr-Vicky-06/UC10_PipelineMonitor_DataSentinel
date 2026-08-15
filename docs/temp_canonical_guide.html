@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UC10 Canonical Data Knowledge Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            font-size: 10.5pt;
+        }
+        h1 { font-size: 20pt; color: #1a5276; margin-bottom: 5px; }
+        h2 { font-size: 14pt; color: #2980b9; margin-top: 25px; border-bottom: 1px solid #eaeaea; padding-bottom: 4px; page-break-after: avoid; }
+        h3 { font-size: 12pt; color: #2c3e50; margin-top: 15px; margin-bottom: 5px; page-break-after: avoid; }
+        p { margin: 8px 0; }
+        ul, ol { margin-top: 5px; margin-bottom: 10px; }
+        li { margin-bottom: 4px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+            font-size: 10pt;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        th { background-color: #f2f3f4; color: #2c3e50; font-weight: bold; }
+        
+        .keep-together { page-break-inside: avoid; }
+        
+        .cover { text-align: center; padding-top: 20px; border-bottom: 2px solid #1a5276; margin-bottom: 20px; padding-bottom: 15px; }
+        .subtitle { font-size: 14pt; color: #7f8c8d; }
+        .mermaid { text-align: center; margin: 15px 0; }
+        
+        .feature-box {
+            background-color: #f8f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+        
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .flex-box {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            page-break-inside: avoid;
+        }
+        .real-box { border-top: 4px solid #27ae60; background-color: #f9fbf9; }
+        .sim-box { border-top: 4px solid #e67e22; background-color: #fcf8f2; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { curve: 'basis' }
+        });
+    </script>
+</head>
+<body>
+
+<div class="cover">
+    <h1>UC10 &mdash; CANONICAL DATA KNOWLEDGE GUIDE</h1>
+    <div class="subtitle">Data-First, Feature-First, Detector-Second</div>
+</div>
+
+<h2>SECTION 1 &mdash; WHAT DATA DO WE HAVE?</h2>
+<p>We rely on three core synthesized CMS datasets. The following metrics reflect the exact audited state of our data sample:</p>
+
+<table>
+    <tr><th>Dataset</th><th>What it represents</th><th>Grain</th><th>Key</th><th>Important date</th><th>Why UC10 uses it</th></tr>
+    <tr><td><strong>Beneficiary</strong></td><td>member/reference view</td><td>1 row per beneficiary</td><td>BENE_ID</td><td>(Reference)</td><td>Master population list</td></tr>
+    <tr><td><strong>FFS Claims</strong></td><td>medical activity</td><td>claim-line grain</td><td>CLM_ID / CLM_LINE_NUM</td><td>CLM_FROM_DT / NCH_WKLY_PROC_DT</td><td>Baseline medical volume</td></tr>
+    <tr><td><strong>PDE</strong></td><td>pharmacy activity</td><td>event-level grain</td><td>PDE_ID</td><td>SRVC_DT</td><td>Baseline pharmacy volume</td></tr>
+</table>
+
+<div class="keep-together">
+    <p><strong>Audited Dataset Facts:</strong></p>
+    <ul>
+        <li><strong>Beneficiary:</strong> 5,975 rows, 123 columns.</li>
+        <li><strong>FFS Claims:</strong> 1,121,004 rows, 96 columns. Maps to 90,705 unique claims across 7,971 unique beneficiaries.</li>
+        <li><strong>PDE:</strong> 515,520 rows, 36 columns. Maps to 515,520 unique events across 7,403 unique beneficiaries.</li>
+    </ul>
+</div>
+
+<h2>SECTION 2 &mdash; HOW ARE THE DATASETS RELATED?</h2>
+<p><code>BENE_ID</code> acts as the primary relational key bridging medical and pharmacy activity.</p>
+
+<div class="mermaid keep-together">
+    graph TD
+        B["Beneficiary"] -->|BENE_ID| C["FFS Claims<br/>Medical Activity"]
+        B -->|BENE_ID| P["PDE<br/>Pharmacy Activity"]
+</div>
+
+<div class="keep-together">
+    <p><strong>Audited Relationship Findings:</strong></p>
+    <ul>
+        <li>Total Beneficiaries in Master: 5,975</li>
+        <li>Intersection (Claims + PDE): 6,850 beneficiaries have both medical and pharmacy events.</li>
+        <li><strong>Orphan Claims:</strong> 2,436 unique beneficiaries in Claims do not exist in Beneficiary.</li>
+        <li><strong>Orphan PDEs:</strong> 2,018 unique beneficiaries in PDE do not exist in Beneficiary.</li>
+    </ul>
+    
+    <p><strong>What this means for UC10:</strong><br/>
+    We do not possess perfect referential integrity. These orphan records are not a mistake to be silently cleaned; they serve as active Data Quality (DQ) evidence that the anomaly detectors monitor.</p>
+</div>
+
+<h2>SECTION 3 &mdash; WHY GRAIN MATTERS</h2>
+<p>Understanding the data "grain" is critical:</p>
+<ul>
+    <li><strong>Beneficiary:</strong> 1 row = 1 beneficiary</li>
+    <li><strong>Claims:</strong> 1 row = 1 claim line</li>
+    <li><strong>PDE:</strong> 1 row = 1 prescription event</li>
+</ul>
+
+<p>Because a single complex medical claim can generate hundreds of line items, comparing raw claim rows directly to single-event pharmacy rows is meaningless. We must aggregate these varying granularities into a daily window before the data can be analyzed.</p>
+
+<div class="mermaid keep-together">
+    graph TD
+        R["Raw records"] --> U["Understand grain"]
+        U --> A["Aggregate by time"]
+        A --> W["Common daily window"]
+        W --> C["Comparable behaviour"]
+</div>
+
+<h2>SECTION 4 &mdash; FROM RAW RECORDS TO DAILY DATA</h2>
+<p>The machine learning model does not directly consume millions of raw healthcare records. It consumes a compact daily representation of behaviour.</p>
+
+<div class="mermaid keep-together">
+    graph TD
+        R["Raw CSV"] --> P["Parse / standardize"]
+        P --> V["Validate"]
+        V --> C["Choose correct date"]
+        C --> G["Group by daily window"]
+        G --> M["Calculate metrics"]
+        M --> F["Daily feature matrix"]
+</div>
+
+<h2>SECTION 5 &mdash; THE FOUR DATA ASPECTS</h2>
+
+<div class="feature-box">
+    <h3>A. DATA QUALITY</h3>
+    <strong>Question:</strong> "Is the data valid?"<br/>
+    <strong>Features:</strong> null_rate, duplicate_rate, claims_null_rate, cross_dataset_mismatch_rate, dq_violation_rate
+</div>
+
+<div class="feature-box">
+    <h3>B. HEALTHCARE VOLUME / BEHAVIOUR</h3>
+    <strong>Question:</strong> "Is healthcare activity behaving normally?"<br/>
+    <strong>Features:</strong> claim_count, pde_count, unique_beneficiary_count, unique_provider_count, claim_pde_ratio, volume_change_pct
+</div>
+
+<div class="feature-box">
+    <h3>C. DISTRIBUTION</h3>
+    <strong>Question:</strong> "Have the characteristics of the data changed?"<br/>
+    <strong>Features:</strong> median_days_supply, median_rx_cost, median_claim_amount
+</div>
+
+<div class="feature-box" style="border-left-color: #e67e22;">
+    <h3>D. OPERATIONAL TELEMETRY</h3>
+    <strong>Question:</strong> "Is the pipeline processing normally?"<br/>
+    <strong>Features:</strong> processing_duration, throughput, failure_rate, backlog<br/>
+    <strong style="color: #e67e22;">[PROTOTYPE-SIMULATED]</strong>
+</div>
+
+<h2>SECTION 6 &mdash; FEATURE DICTIONARY</h2>
+<table>
+    <tr><th>Feature</th><th>Built from</th><th>What it tells us</th><th>Aspect</th><th>Detector</th></tr>
+    <tr><td><code>claim_count</code></td><td>FFS Claims</td><td>daily medical activity volume</td><td>healthcare behaviour</td><td>MAD / IF</td></tr>
+    <tr><td><code>pde_count</code></td><td>PDE</td><td>daily pharmacy activity volume</td><td>healthcare behaviour</td><td>MAD / IF</td></tr>
+    <tr><td><code>unique_beneficiary_count</code></td><td>Claims + PDE</td><td>unique patients active</td><td>healthcare behaviour</td><td>IF</td></tr>
+    <tr><td><code>unique_provider_count</code></td><td>Claims + PDE</td><td>unique billing providers</td><td>healthcare behaviour</td><td>IF</td></tr>
+    <tr><td><code>claim_pde_ratio</code></td><td>Claims + PDE</td><td>relationship between medical and pharmacy activity</td><td>cross-dataset behaviour</td><td>IF</td></tr>
+    <tr><td><code>volume_change_pct</code></td><td>Derived</td><td>week-over-week or day-over-day volatility</td><td>healthcare behaviour</td><td>MAD</td></tr>
+    <tr><td><code>median_days_supply</code></td><td>PDE</td><td>shift in prescription duration</td><td>distribution</td><td>MAD / IF</td></tr>
+    <tr><td><code>median_rx_cost</code></td><td>PDE</td><td>shift in average drug prices</td><td>distribution</td><td>MAD / IF</td></tr>
+    <tr><td><code>median_claim_amount</code></td><td>FFS Claims</td><td>shift in average medical billing</td><td>distribution</td><td>MAD / IF</td></tr>
+    <tr><td><code>null_rate</code></td><td>DQ checks</td><td>missing critical identifiers across files</td><td>data quality</td><td>DQ</td></tr>
+    <tr><td><code>duplicate_rate</code></td><td>DQ checks</td><td>repeating identical primary keys</td><td>data quality</td><td>DQ</td></tr>
+    <tr><td><code>claims_null_rate</code></td><td>DQ checks</td><td>missing diagnosis or provider codes</td><td>data quality</td><td>DQ</td></tr>
+    <tr><td><code>cross_dataset_mismatch_rate</code></td><td>Claims + PDE</td><td>orphan records missing BENE_ID references</td><td>data quality</td><td>DQ</td></tr>
+    <tr><td><code>dq_violation_rate</code></td><td>DQ checks</td><td>overall data rule failures</td><td>data quality</td><td>DQ</td></tr>
+    <tr><td><code>processing_duration</code></td><td>Pipeline metrics</td><td>batch processing execution time</td><td>operational</td><td>IF / SLA</td></tr>
+    <tr><td><code>throughput</code></td><td>Pipeline metrics</td><td>processed records per second</td><td>operational</td><td>IF / SLA</td></tr>
+    <tr><td><code>failure_rate</code></td><td>Pipeline metrics</td><td>failed processing tasks</td><td>operational</td><td>IF / SLA</td></tr>
+    <tr><td><code>backlog</code></td><td>Pipeline metrics</td><td>volume of pending work</td><td>operational</td><td>IF / SLA</td></tr>
+</table>
+
+<h2>SECTION 7 &mdash; FEATURE &rarr; ASPECT &rarr; DETECTOR</h2>
+<div class="mermaid keep-together">
+    graph TD
+        D["UC10 DATA"] --> A1["DATA QUALITY"]
+        D --> A2["BEHAVIOUR"]
+        D --> A3["DISTRIBUTION"]
+        
+        A1 --> DQ["DQ"]
+        A2 --> M1["MAD / IF"]
+        A3 --> M2["MAD / IF"]
+        
+        DQ --> EF["EVIDENCE FUSION"]
+        M1 --> EF
+        M2 --> EF
+        
+        D --> O["OPERATIONAL VIEW"]
+        O --> IF["IF"]
+        IF --> EF
+</div>
+
+<table>
+    <tr><th>Data Aspect</th><th>Features</th><th>Main Question</th><th>Primary Detector</th></tr>
+    <tr><td>Data Quality</td><td>null_rate, duplicate_rate, etc.</td><td>Is data invalid?</td><td>DQ</td></tr>
+    <tr><td>Volume</td><td>claim_count, pde_count</td><td>Is volume unusual?</td><td>MAD</td></tr>
+    <tr><td>Cross-data behaviour</td><td>claim_pde_ratio</td><td>Are streams behaving differently?</td><td>IF</td></tr>
+    <tr><td>Distribution</td><td>median_rx_cost, etc.</td><td>Has the distribution shifted?</td><td>MAD / IF</td></tr>
+    <tr><td>Operational</td><td>throughput, backlog, etc.</td><td>Is processing degrading?</td><td>IF / SLA</td></tr>
+</table>
+
+<h2>SECTION 8 &mdash; WHY EACH DETECTOR EXISTS</h2>
+<ul>
+    <li><strong>DQ:</strong> "Something is explicitly wrong."<br/>
+    <em>Example:</em> Missing BENE_ID &rarr; DQ</li>
+    <li><strong>MAD:</strong> "One measurement is unusually different from its recent normal."<br/>
+    <em>Example:</em> 40% volume drop &rarr; MAD</li>
+    <li><strong>Isolation Forest:</strong> "Several measurements look unusual together."<br/>
+    <em>Example:</em> Volume slightly abnormal + throughput decreasing + backlog increasing &rarr; Isolation Forest</li>
+</ul>
+
+<h2>SECTION 9 &mdash; WHAT IS REAL AND WHAT IS SIMULATED?</h2>
+<p>The current CMS datasets describe healthcare activity, not live pipeline execution. Operational telemetry is therefore simulated for the prototype.</p>
+
+<div class="flex-container">
+    <div class="flex-box real-box">
+        <h3 style="margin-top:0; color:#27ae60;">REAL DATA</h3>
+        <ul>
+            <li>claim_count</li>
+            <li>pde_count</li>
+            <li>beneficiary counts</li>
+            <li>provider counts</li>
+            <li>median costs</li>
+            <li>median days supply</li>
+            <li>DQ metrics</li>
+            <li>cross-data relationships</li>
+        </ul>
+    </div>
+    <div class="flex-box sim-box">
+        <h3 style="margin-top:0; color:#e67e22;">SIMULATED OPERATIONAL TELEMETRY</h3>
+        <ul>
+            <li>processing_duration</li>
+            <li>throughput</li>
+            <li>failure_rate</li>
+            <li>backlog</li>
+            <li>SLA-related metrics</li>
+        </ul>
+    </div>
+</div>
+
+<h2>SECTION 10 &mdash; ANOMALY COVERAGE</h2>
+<table>
+    <tr><th>Anomaly</th><th>Evidence</th><th>Feature</th><th>Detector</th></tr>
+    <tr><td>Missing ID</td><td>null identifier</td><td>null_rate</td><td>DQ</td></tr>
+    <tr><td>Duplicate</td><td>repeated record/key</td><td>duplicate_rate</td><td>DQ</td></tr>
+    <tr><td>Invalid date</td><td>invalid date</td><td>dq_violation_rate</td><td>DQ</td></tr>
+    <tr><td>Referential mismatch</td><td>orphan/reference mismatch</td><td>cross_dataset_mismatch_rate</td><td>DQ</td></tr>
+    <tr><td>Volume drop</td><td>sudden volume change</td><td>claim_count / pde_count</td><td>MAD</td></tr>
+    <tr><td>Multivariate degradation</td><td>several abnormal metrics</td><td>behavioural/operational features</td><td>IF</td></tr>
+</table>
+
+<h2>SECTION 11 &mdash; COMPLETE DATA STORY</h2>
+<div class="mermaid keep-together" style="max-width: 70%; margin: 0 auto; max-height: 600px;">
+    graph TD
+        HD["Healthcare Data"] --> UG["Understand Dataset Grain"]
+        UG --> VQ["Validate Quality"]
+        VQ --> RC["Relate Claims + PDE through BENE_ID"]
+        RC --> CD["Create Common Daily Windows"]
+        CD --> BF["Build 18 Features"]
+        
+        BF --> DQ["DQ<br/>(bad data)"]
+        BF --> MAD["MAD<br/>(unusual metric)"]
+        BF --> IF["IF<br/>(combination of behaviour)"]
+        
+        DQ --> EF["Evidence Fusion"]
+        MAD --> EF
+        IF --> EF
+        
+        EF --> AA["Anomaly Assessment"]
+        AA --> RCA["RCA / Impact"]
+        RCA --> SLA["SLA Risk"]
+</div>
+
+<div style="page-break-before: always;"></div>
+
+<h2>SECTION 12 &mdash; WHAT THIS DATA CAN AND CANNOT PROVE</h2>
+
+<div class="flex-container">
+    <div class="flex-box">
+        <h3 style="margin-top:0;">CAN SUPPORT:</h3>
+        <ul>
+            <li>healthcare activity monitoring</li>
+            <li>data quality monitoring</li>
+            <li>cross-dataset consistency analysis</li>
+            <li>temporal volume anomaly detection</li>
+            <li>multivariate behavioural anomaly detection</li>
+            <li>prototype SLA modelling using simulated telemetry</li>
+        </ul>
+    </div>
+    <div class="flex-box">
+        <h3 style="margin-top:0;">CANNOT DIRECTLY PROVIDE:</h3>
+        <ul>
+            <li>real production pipeline execution telemetry</li>
+            <li>real processing duration</li>
+            <li>real queue backlog</li>
+            <li>real production SLA deadlines</li>
+            <li>real prior authorization workflow data</li>
+            <li>real authentication/authorization transactions</li>
+        </ul>
+    </div>
+</div>
+
+<h2>SECTION 13 &mdash; FINAL TAKEAWAY</h2>
+<p>The UC10 data foundation converts heterogeneous healthcare records into a common daily behavioural view. The resulting features provide different types of evidence: data-quality evidence, volume and behaviour evidence, distribution evidence, and prototype operational evidence. Each evidence type is sent to the detector best suited to identify that type of anomaly.</p>
+
+<div class="keep-together" style="margin-top: 30px; text-align: center; font-size: 14pt; color: #27ae60; font-weight: bold; border: 2px solid #27ae60; padding: 15px; border-radius: 5px;">
+    DATA FOUNDATION STATUS: READY TO FREEZE
+</div>
+
+</body>
+</html>

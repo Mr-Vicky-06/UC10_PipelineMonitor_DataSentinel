@@ -1,0 +1,39 @@
+statistical:
+  method: rolling_median_mad
+  window: 7
+  threshold: 3.5
+  metrics:
+    - pde_count
+    - claim_count
+    - unique_beneficiary_count
+    - unique_provider_count
+    - median_days_supply
+    - median_rx_cost
+    - median_claim_amount
+    - claim_pde_ratio
+    - cross_dataset_mismatch_rate
+    - volume_change_pct
+    - null_rate
+    - duplicate_rate
+    - claims_null_rate
+    - dq_violation_rate
+    # Simulated Ops Features
+    - processing_duration
+    - throughput
+    - failure_rate
+    - backlog
+
+isolation_forest:
+  contamination: 0.02
+  train_split: 0.70
+  random_state: 42
+
+evidence_fusion:
+  weights:
+    dq_violation: 3
+    statistical_anomaly: 2
+    isolation_forest_anomaly: 2
+    cross_dataset_inconsistency: 2
+    operational_degradation: 2
+  threshold: 2
+

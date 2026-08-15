@@ -1,0 +1,41 @@
+feature_pipeline:
+  window: "daily"
+  date_column_claims: "CLM_FROM_DT"
+  date_column_pde: "SRVC_DT"
+  
+  inputs:
+    beneficiary: "data/raw/beneficiary/beneficiary_2024.csv"
+    claims_inpatient: "data/raw/claims/inpatient.csv"
+    claims_outpatient: "data/raw/claims/outpatient.csv"
+    claims_carrier: "data/raw/claims/carrier.csv"
+    pde: "data/raw/pde/pde.csv"
+    
+  outputs:
+    feature_matrix: "data/features/uc10_feature_matrix.parquet"
+    validation_report: "outputs/features/03_FEATURE_VALIDATION_REPORT.md"
+    selection_report: "outputs/features/02_FEATURE_SELECTION_REPORT.md"
+    feature_dictionary: "outputs/features/04_FEATURE_DICTIONARY.md"
+    
+  features:
+    volume:
+      - record_count
+      - unique_beneficiary_count
+      - unique_provider_count
+      - pde_count
+    data_quality:
+      - null_rate
+      - duplicate_rate
+      - dq_violation_rate
+    distribution:
+      - median_claim_amount
+      - median_days_supply
+    cross_dataset:
+      - claim_pde_ratio
+      - cross_dataset_mismatch_rate
+    temporal:
+      - volume_change_pct
+    pipeline_simulated:
+      - processing_duration
+      - throughput
+      - failure_rate
+      - backlog

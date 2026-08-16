@@ -1,6 +1,8 @@
 # Data folders
 data/raw/
 data/optional/
+data/
+outputs/
 scratch/
 
 # Python caching

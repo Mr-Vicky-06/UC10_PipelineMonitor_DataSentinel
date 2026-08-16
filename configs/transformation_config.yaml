@@ -1,0 +1,71 @@
+transformation_stage:
+  version: "1.0.0"
+  output_format: "parquet"
+  output_dir: "data/transformed"
+  
+  date_formats:
+    - "%Y%m%d"
+    - "%Y-%m-%d"
+    - "%m/%d/%Y"
+    - "%Y/%m/%d"
+    
+  claims:
+    id_columns:
+      - "CLM_ID"
+      - "CLM_LINE_NUM"
+      - "BENE_ID"
+      - "PRVDR_NUM"
+      - "AT_PHYSN_NPI"
+      - "OP_PHYSN_NPI"
+      - "OT_PHYSN_NPI"
+      - "HCPCS_CD"
+      - "hospital_id"
+    date_columns:
+      - "CLM_FROM_DT"
+      - "CLM_THRU_DT"
+      - "NCH_BENE_DSCHRG_DT"
+      - "ADMTN_DT"
+    numeric_columns:
+      - "CLM_PMT_AMT"
+      - "NCH_PRMRY_PYR_CLM_PD_AMT"
+      - "CLM_PASS_THRU_PER_DIEM_AMT"
+      - "NCH_BENE_BLOOD_DDCTBL_LBLTY_AM"
+      - "NCH_BENE_IP_DDCTBL_AMT"
+      - "NCH_BENE_PTA_COINSRNC_LBLTY_AM"
+      - "CLM_UTLZTN_DAY_CNT"
+
+  authorizations:
+    id_columns:
+      - "AUTH_ID"
+      - "BENE_ID"
+      - "PRVDR_NUM"
+      - "hospital_id"
+      - "AUTH_SERVICE_CD"
+    date_columns:
+      - "AUTH_REQ_DT"
+      - "AUTH_START_DT"
+      - "AUTH_END_DT"
+    numeric_columns:
+      - "AUTH_DAYS_REQ"
+      - "AUTH_DAYS_APPROVED"
+
+  pde:
+    id_columns:
+      - "PDE_ID"
+      - "BENE_ID"
+      - "PRSCRBR_ID"
+      - "PROD_SERVICE_ID"
+      - "RX_NUM"
+    date_columns:
+      - "SRVC_DT"
+    numeric_columns:
+      - "DAYS_SUPLY_NUM"
+      - "QTY_DSPNSD_NUM"
+      - "TOT_RX_CST_AMT"
+      - "PT_PAY_AMT"
+
+  metadata_columns:
+    - "_transformed_at"
+    - "_source_file"
+    - "_batch_id"
+    - "_record_lineage_id"

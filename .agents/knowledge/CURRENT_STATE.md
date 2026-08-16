@@ -11,13 +11,14 @@ This document is the authoritative source for the current project phase. Do not 
 - Ground truth
 - Source-data protection
 - Repository/team structure
+- Landing Layer
+- Ingestion Layer
 
 ## CURRENT PHASE
 **Representative Pipeline Design / Implementation**
 
 ## NEXT
 Pipeline contracts:
-→ ingestion
 → validation
 → cleaning
 → transformation

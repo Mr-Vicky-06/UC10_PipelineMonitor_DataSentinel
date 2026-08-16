@@ -1,0 +1,12 @@
+active_run_id: "run_20260816_141418"
+
+landing:
+  source_root: "master_data/batches"
+  output_root: "outputs/pipeline_workspace/landing"
+
+ingestion:
+  input_root: "outputs/pipeline_workspace/landing"
+  output_root: "outputs/pipeline_workspace"
+  delimiter: "|"
+  file_extension: ".csv"
+  idempotency_state_file: "ingestion_state.json"

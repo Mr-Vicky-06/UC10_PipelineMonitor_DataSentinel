@@ -1,0 +1,20 @@
+{
+    "run_id": "run_20260816_141418",
+    "total_claim_lines": 100000,
+    "total_distinct_claims": 30193,
+    "total_beneficiaries": 29085,
+    "total_providers": 5,
+    "total_hospitals": 5,
+    "total_authorization_records": 21801,
+    "total_batches_generated": 1137,
+    "scenario_counts": {
+        "VALID": 17049,
+        "MISSING": 2353,
+        "PROVIDER_MISMATCH": 1214,
+        "EXPIRED": 1205,
+        "NOT_YET_EFFECTIVE": 1172,
+        "PROCEDURE_MISMATCH": 690,
+        "INVALID_STATUS": 471
+    },
+    "source_integrity": "PASSED"
+}

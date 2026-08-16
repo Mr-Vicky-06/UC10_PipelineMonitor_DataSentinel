@@ -1,0 +1,67 @@
+dataset_name: authorization
+version: "1.1.0"
+description: "Data cleaning configuration for linked prior authorization dataset"
+
+# Missing value representations to normalize
+null_representations:
+  - ""
+  - " "
+  - "NULL"
+  - "null"
+  - "None"
+  - "NONE"
+  - "N/A"
+  - "NA"
+  - "NaN"
+  - "nan"
+
+canonical_null: ""
+
+# Mandatory fields (must not be silently repaired/fabricated if missing)
+mandatory_fields:
+  - AUTH_ID
+  - BENE_ID
+  - PRF_PHYSN_NPI
+  - HCPCS_CD
+  - AUTH_EFF_DT
+  - AUTH_EXP_DT
+  - AUTH_AMT
+  - AUTH_STATUS_CD
+
+# Date standardization
+canonical_date_format: "%Y-%m-%d"
+accepted_date_formats:
+  - "%Y%m%d"
+  - "%Y-%m-%d"
+  - "%d-%b-%Y"
+
+date_fields:
+  - AUTH_EFF_DT
+  - AUTH_EXP_DT
+
+# Identifier fields that MUST remain strings (preserve leading zeros, no arbitrary uppercase/changes)
+identifier_fields:
+  - AUTH_ID
+  - BENE_ID
+  - PRF_PHYSN_NPI
+
+# Healthcare code fields (preserve leading zeros, standard casing)
+code_fields:
+  - HCPCS_CD
+
+# Numeric amount fields
+numeric_fields:
+  - AUTH_AMT
+
+# Categorical fields (trim whitespace, uppercase, preserve unknown categories e.g. UNKNOWN_STATUS)
+categorical_fields:
+  - AUTH_STATUS_CD
+
+# Free text fields (trim whitespace only, do NOT uppercase)
+free_text_fields: []
+
+# Deduplication key
+primary_key:
+  - AUTH_ID
+
+output_delimiter: ","

@@ -115,8 +115,8 @@ class TestSyntheticTransformationValidation(unittest.TestCase):
         df_out, metrics = self.transformer.transform_claims(df_input, "test_nulls.csv", "b01")
         
         self.assertEqual(len(df_out), 2)
-        self.assertIsNone(df_out["BENE_ID"].iloc[1])
-        self.assertIsNone(df_out["CLM_FROM_DT"].iloc[1])
+        self.assertTrue(pd.isna(df_out["BENE_ID"].iloc[1]))
+        self.assertTrue(pd.isna(df_out["CLM_FROM_DT"].iloc[1]))
         self.assertTrue(pd.isna(df_out["CLM_PMT_AMT"].iloc[1]))
 
     def test_edge_case_02_invalid_dates(self):
@@ -128,8 +128,8 @@ class TestSyntheticTransformationValidation(unittest.TestCase):
         df_out, metrics = self.transformer.transform_claims(df_input, "test_dates.csv", "b02")
         
         self.assertEqual(df_out["CLM_FROM_DT"].iloc[0], "2026-01-15")
-        self.assertIsNone(df_out["CLM_FROM_DT"].iloc[1])
-        self.assertIsNone(df_out["CLM_FROM_DT"].iloc[2])
+        self.assertTrue(pd.isna(df_out["CLM_FROM_DT"].iloc[1]))
+        self.assertTrue(pd.isna(df_out["CLM_FROM_DT"].iloc[2]))
 
         rej = metrics["rejections"]
         invalid_date_rejs = [r for r in rej if r["error_type"] == "INVALID_DATE"]
@@ -334,7 +334,7 @@ class TestSyntheticTransformationValidation(unittest.TestCase):
 
         # Row 2 ($500.00)
         self.assertAlmostEqual(df_out["CLM_PMT_AMT"].iloc[2], 500.00)
-        self.assertIsNone(df_out["_suppression_indicator"].iloc[2])
+        self.assertTrue(pd.isna(df_out["_suppression_indicator"].iloc[2]))
 
 
 if __name__ == "__main__":

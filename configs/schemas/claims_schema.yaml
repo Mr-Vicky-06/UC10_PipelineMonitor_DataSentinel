@@ -1,0 +1,1147 @@
+dataset_name: claims
+version: 1.1.0
+description: Comprehensive 200-column schema contract for Medicare-style inpatient/outpatient
+  claims at claim-line grain
+primary_key:
+- CLM_ID
+- CLM_LINE_NUM
+default_delimiter: '|'
+allow_additional_columns: false
+strict_mode: false
+fields:
+- name: BENE_ID
+  type: string
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column BENE_ID
+- name: CLM_ID
+  type: string
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column CLM_ID
+- name: NCH_NEAR_LINE_REC_IDENT_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_NEAR_LINE_REC_IDENT_CD
+- name: NCH_CLM_TYPE_CD
+  type: string
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column NCH_CLM_TYPE_CD
+- name: CLM_FROM_DT
+  type: date
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column CLM_FROM_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: CLM_THRU_DT
+  type: date
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column CLM_THRU_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: NCH_WKLY_PROC_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_WKLY_PROC_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: FI_CLM_PROC_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column FI_CLM_PROC_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: CLAIM_QUERY_CODE
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLAIM_QUERY_CODE
+- name: PRVDR_NUM
+  type: string
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column PRVDR_NUM
+- name: CLM_FAC_TYPE_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_FAC_TYPE_CD
+- name: CLM_SRVC_CLSFCTN_TYPE_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_SRVC_CLSFCTN_TYPE_CD
+- name: CLM_FREQ_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_FREQ_CD
+- name: FI_NUM
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column FI_NUM
+- name: CLM_MDCR_NON_PMT_RSN_CD
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_MDCR_NON_PMT_RSN_CD
+- name: CLM_PMT_AMT
+  type: float
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column CLM_PMT_AMT
+- name: NCH_PRMRY_PYR_CLM_PD_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_PRMRY_PYR_CLM_PD_AMT
+- name: NCH_PRMRY_PYR_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_PRMRY_PYR_CD
+- name: FI_CLM_ACTN_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column FI_CLM_ACTN_CD
+- name: PRVDR_STATE_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRVDR_STATE_CD
+- name: ORG_NPI_NUM
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ORG_NPI_NUM
+- name: AT_PHYSN_UPIN
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column AT_PHYSN_UPIN
+- name: AT_PHYSN_NPI
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column AT_PHYSN_NPI
+- name: OP_PHYSN_UPIN
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column OP_PHYSN_UPIN
+- name: OP_PHYSN_NPI
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column OP_PHYSN_NPI
+- name: OT_PHYSN_UPIN
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column OT_PHYSN_UPIN
+- name: OT_PHYSN_NPI
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column OT_PHYSN_NPI
+- name: CLM_MCO_PD_SW
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_MCO_PD_SW
+- name: PTNT_DSCHRG_STUS_CD
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PTNT_DSCHRG_STUS_CD
+- name: CLM_PPS_IND_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_IND_CD
+- name: CLM_TOT_CHRG_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_TOT_CHRG_AMT
+- name: CLM_ADMSN_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_ADMSN_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: CLM_IP_ADMSN_TYPE_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_IP_ADMSN_TYPE_CD
+- name: CLM_SRC_IP_ADMSN_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_SRC_IP_ADMSN_CD
+- name: NCH_PTNT_STATUS_IND_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_PTNT_STATUS_IND_CD
+- name: CLM_PASS_THRU_PER_DIEM_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PASS_THRU_PER_DIEM_AMT
+- name: NCH_BENE_IP_DDCTBL_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BENE_IP_DDCTBL_AMT
+- name: NCH_BENE_PTA_COINSRNC_LBLTY_AM
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BENE_PTA_COINSRNC_LBLTY_AM
+- name: NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BENE_BLOOD_DDCTBL_LBLTY_AM
+- name: NCH_PROFNL_CMPNT_CHRG_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_PROFNL_CMPNT_CHRG_AMT
+- name: NCH_IP_NCVRD_CHRG_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_IP_NCVRD_CHRG_AMT
+- name: NCH_IP_TOT_DDCTN_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_IP_TOT_DDCTN_AMT
+- name: CLM_TOT_PPS_CPTL_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_TOT_PPS_CPTL_AMT
+- name: CLM_PPS_CPTL_FSP_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_FSP_AMT
+- name: CLM_PPS_CPTL_OUTLIER_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_OUTLIER_AMT
+- name: CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_DSPRPRTNT_SHR_AMT
+- name: CLM_PPS_CPTL_IME_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_IME_AMT
+- name: CLM_PPS_CPTL_EXCPTN_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_EXCPTN_AMT
+- name: CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_OLD_CPTL_HLD_HRMLS_AMT
+- name: CLM_PPS_CPTL_DRG_WT_NUM
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_PPS_CPTL_DRG_WT_NUM
+- name: CLM_UTLZTN_DAY_CNT
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_UTLZTN_DAY_CNT
+- name: BENE_TOT_COINSRNC_DAYS_CNT
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column BENE_TOT_COINSRNC_DAYS_CNT
+- name: BENE_LRD_USED_CNT
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column BENE_LRD_USED_CNT
+- name: CLM_NON_UTLZTN_DAYS_CNT
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_NON_UTLZTN_DAYS_CNT
+- name: NCH_BLOOD_PNTS_FRNSHD_QTY
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BLOOD_PNTS_FRNSHD_QTY
+- name: NCH_VRFD_NCVRD_STAY_FROM_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_VRFD_NCVRD_STAY_FROM_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: NCH_VRFD_NCVRD_STAY_THRU_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_VRFD_NCVRD_STAY_THRU_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: NCH_ACTV_OR_CVRD_LVL_CARE_THRU
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_ACTV_OR_CVRD_LVL_CARE_THRU
+- name: NCH_BENE_MDCR_BNFTS_EXHTD_DT_I
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BENE_MDCR_BNFTS_EXHTD_DT_I
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: NCH_BENE_DSCHRG_DT
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_BENE_DSCHRG_DT
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: CLM_DRG_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_DRG_CD
+- name: CLM_DRG_OUTLIER_STAY_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_DRG_OUTLIER_STAY_CD
+- name: NCH_DRG_OUTLIER_APRVD_PMT_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column NCH_DRG_OUTLIER_APRVD_PMT_AMT
+- name: ADMTG_DGNS_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ADMTG_DGNS_CD
+- name: PRNCPAL_DGNS_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRNCPAL_DGNS_CD
+- name: ICD_DGNS_CD1
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD1
+- name: CLM_POA_IND_SW1
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW1
+- name: ICD_DGNS_CD2
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD2
+- name: CLM_POA_IND_SW2
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW2
+- name: ICD_DGNS_CD3
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD3
+- name: CLM_POA_IND_SW3
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW3
+- name: ICD_DGNS_CD4
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD4
+- name: CLM_POA_IND_SW4
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW4
+- name: ICD_DGNS_CD5
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD5
+- name: CLM_POA_IND_SW5
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW5
+- name: ICD_DGNS_CD6
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD6
+- name: CLM_POA_IND_SW6
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW6
+- name: ICD_DGNS_CD7
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD7
+- name: CLM_POA_IND_SW7
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW7
+- name: ICD_DGNS_CD8
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD8
+- name: CLM_POA_IND_SW8
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW8
+- name: ICD_DGNS_CD9
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD9
+- name: CLM_POA_IND_SW9
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW9
+- name: ICD_DGNS_CD10
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD10
+- name: CLM_POA_IND_SW10
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW10
+- name: ICD_DGNS_CD11
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD11
+- name: CLM_POA_IND_SW11
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW11
+- name: ICD_DGNS_CD12
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD12
+- name: CLM_POA_IND_SW12
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW12
+- name: ICD_DGNS_CD13
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD13
+- name: CLM_POA_IND_SW13
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW13
+- name: ICD_DGNS_CD14
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD14
+- name: CLM_POA_IND_SW14
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW14
+- name: ICD_DGNS_CD15
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD15
+- name: CLM_POA_IND_SW15
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW15
+- name: ICD_DGNS_CD16
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD16
+- name: CLM_POA_IND_SW16
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW16
+- name: ICD_DGNS_CD17
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD17
+- name: CLM_POA_IND_SW17
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW17
+- name: ICD_DGNS_CD18
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD18
+- name: CLM_POA_IND_SW18
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW18
+- name: ICD_DGNS_CD19
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD19
+- name: CLM_POA_IND_SW19
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW19
+- name: ICD_DGNS_CD20
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD20
+- name: CLM_POA_IND_SW20
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW20
+- name: ICD_DGNS_CD21
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD21
+- name: CLM_POA_IND_SW21
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW21
+- name: ICD_DGNS_CD22
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD22
+- name: CLM_POA_IND_SW22
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW22
+- name: ICD_DGNS_CD23
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD23
+- name: CLM_POA_IND_SW23
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW23
+- name: ICD_DGNS_CD24
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD24
+- name: CLM_POA_IND_SW24
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW24
+- name: ICD_DGNS_CD25
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_CD25
+- name: CLM_POA_IND_SW25
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_POA_IND_SW25
+- name: FST_DGNS_E_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column FST_DGNS_E_CD
+- name: ICD_DGNS_E_CD1
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD1
+- name: CLM_E_POA_IND_SW1
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW1
+- name: ICD_DGNS_E_CD2
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD2
+- name: CLM_E_POA_IND_SW2
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW2
+- name: ICD_DGNS_E_CD3
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD3
+- name: CLM_E_POA_IND_SW3
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW3
+- name: ICD_DGNS_E_CD4
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD4
+- name: CLM_E_POA_IND_SW4
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW4
+- name: ICD_DGNS_E_CD5
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD5
+- name: CLM_E_POA_IND_SW5
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW5
+- name: ICD_DGNS_E_CD6
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD6
+- name: CLM_E_POA_IND_SW6
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW6
+- name: ICD_DGNS_E_CD7
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD7
+- name: CLM_E_POA_IND_SW7
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW7
+- name: ICD_DGNS_E_CD8
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD8
+- name: CLM_E_POA_IND_SW8
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW8
+- name: ICD_DGNS_E_CD9
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD9
+- name: CLM_E_POA_IND_SW9
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW9
+- name: ICD_DGNS_E_CD10
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD10
+- name: CLM_E_POA_IND_SW10
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW10
+- name: ICD_DGNS_E_CD11
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD11
+- name: CLM_E_POA_IND_SW11
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW11
+- name: ICD_DGNS_E_CD12
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_DGNS_E_CD12
+- name: CLM_E_POA_IND_SW12
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_E_POA_IND_SW12
+- name: ICD_PRCDR_CD1
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD1
+- name: PRCDR_DT1
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT1
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD2
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD2
+- name: PRCDR_DT2
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT2
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD3
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD3
+- name: PRCDR_DT3
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT3
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD4
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD4
+- name: PRCDR_DT4
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT4
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD5
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD5
+- name: PRCDR_DT5
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT5
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD6
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD6
+- name: PRCDR_DT6
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT6
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD7
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD7
+- name: PRCDR_DT7
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT7
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD8
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD8
+- name: PRCDR_DT8
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT8
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD9
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD9
+- name: PRCDR_DT9
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT9
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD10
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD10
+- name: PRCDR_DT10
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT10
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD11
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD11
+- name: PRCDR_DT11
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT11
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD12
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD12
+- name: PRCDR_DT12
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT12
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD13
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD13
+- name: PRCDR_DT13
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT13
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD14
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD14
+- name: PRCDR_DT14
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT14
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD15
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD15
+- name: PRCDR_DT15
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT15
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD16
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD16
+- name: PRCDR_DT16
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT16
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD17
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD17
+- name: PRCDR_DT17
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT17
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD18
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD18
+- name: PRCDR_DT18
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT18
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD19
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD19
+- name: PRCDR_DT19
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT19
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD20
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD20
+- name: PRCDR_DT20
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT20
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD21
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD21
+- name: PRCDR_DT21
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT21
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD22
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD22
+- name: PRCDR_DT22
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT22
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD23
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD23
+- name: PRCDR_DT23
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT23
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD24
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD24
+- name: PRCDR_DT24
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT24
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: ICD_PRCDR_CD25
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column ICD_PRCDR_CD25
+- name: PRCDR_DT25
+  type: date
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column PRCDR_DT25
+  date_formats:
+  - '%d-%b-%Y'
+  - '%Y-%m-%d'
+  - '%Y%m%d'
+- name: IME_OP_CLM_VAL_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column IME_OP_CLM_VAL_AMT
+- name: DSH_OP_CLM_VAL_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column DSH_OP_CLM_VAL_AMT
+- name: CLM_UNCOMPD_CARE_PMT_AMT
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column CLM_UNCOMPD_CARE_PMT_AMT
+- name: CLM_LINE_NUM
+  type: integer
+  required: true
+  nullable: false
+  description: CMS Inpatient Claims column CLM_LINE_NUM
+- name: REV_CNTR
+  type: integer
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column REV_CNTR
+- name: HCPCS_CD
+  type: string
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column HCPCS_CD
+- name: REV_CNTR_DDCTBL_COINSRNC_CD
+  type: float
+  required: false
+  nullable: true
+  description: CMS Inpatient Claims column REV_CNTR_DDCTBL_COINSRNC_CD
+- name: ingestion_timestamp
+  type: string
+  required: false
+  nullable: true
+  description: Pipeline ingestion arrival timestamp
+- name: hospital_id
+  type: string
+  required: false
+  nullable: true
+  description: Source hospital identifier
+- name: batch_id
+  type: string
+  required: false
+  nullable: true
+  description: Ingestion batch identifier

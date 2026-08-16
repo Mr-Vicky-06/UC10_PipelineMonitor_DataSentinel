@@ -1,0 +1,72 @@
+dataset_name: authorization
+version: "1.0.0"
+description: "Schema contract for prior authorization dataset linked to healthcare claims"
+
+primary_key:
+  - AUTH_ID
+
+default_delimiter: ","
+allow_additional_columns: false
+strict_mode: false
+
+fields:
+  - name: AUTH_ID
+    type: string
+    required: true
+    nullable: false
+    description: "Unique prior authorization ID"
+
+  - name: BENE_ID
+    type: string
+    required: true
+    nullable: false
+    description: "Beneficiary unique identifier"
+
+  - name: PRF_PHYSN_NPI
+    type: string
+    required: true
+    nullable: false
+    description: "Performing physician / provider identifier"
+
+  - name: HCPCS_CD
+    type: string
+    required: true
+    nullable: false
+    description: "Authorized procedure code"
+
+  - name: AUTH_EFF_DT
+    type: date
+    required: true
+    nullable: false
+    date_formats:
+      - "%Y%m%d"
+      - "%Y-%m-%d"
+      - "%d-%b-%Y"
+    description: "Authorization effective / start date"
+
+  - name: AUTH_EXP_DT
+    type: date
+    required: true
+    nullable: false
+    date_formats:
+      - "%Y%m%d"
+      - "%Y-%m-%d"
+      - "%d-%b-%Y"
+    description: "Authorization expiration / end date"
+
+  - name: AUTH_AMT
+    type: float
+    required: true
+    nullable: false
+    description: "Authorized dollar amount threshold"
+
+  - name: AUTH_STATUS_CD
+    type: string
+    required: true
+    nullable: false
+    allowed_values:
+      - APPROVED
+      - DENIED
+      - PENDING
+      - EXPIRED
+    description: "Authorization status code"

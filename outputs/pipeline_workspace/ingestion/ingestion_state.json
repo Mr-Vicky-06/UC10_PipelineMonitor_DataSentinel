@@ -1,17 +1,17 @@
 {
-  "HOSP-TEST::batch_20261220.csv": {
-    "ingestion_timestamp": "2026-08-17 10:04:11.699988",
-    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_REAL_100\\HOSP-TEST\\batch_20261220.csv",
-    "records_in": 100
-  },
-  "HOSP-TEST::batch_20261115.csv": {
-    "ingestion_timestamp": "2026-08-17 10:04:19.229266",
-    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_FAIL_TEST\\HOSP-TEST\\batch_20261115.csv",
+  "HOSP-TEST::batch_20261210.csv": {
+    "ingestion_timestamp": "2026-08-17 19:30:47.246845",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_REAL_100\\HOSP-TEST\\batch_20261210.csv",
     "records_in": 100
   },
   "HOSP-TEST::batch_20261027.csv": {
-    "ingestion_timestamp": "2026-08-17 10:04:20.871244",
-    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_FAIL_OPEN_TEST\\HOSP-TEST\\batch_20261027.csv",
+    "ingestion_timestamp": "2026-08-17 19:30:53.022704",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_FAIL_TEST\\HOSP-TEST\\batch_20261027.csv",
+    "records_in": 100
+  },
+  "HOSP-TEST::batch_20261211.csv": {
+    "ingestion_timestamp": "2026-08-17 19:30:55.593942",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_FAIL_OPEN_TEST\\HOSP-TEST\\batch_20261211.csv",
     "records_in": 100
   }
 }

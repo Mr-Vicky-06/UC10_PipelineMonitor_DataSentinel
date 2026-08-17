@@ -1,0 +1,36 @@
+{
+  "incident_id": "INC-a1b2c3d4",
+  "summary": "Run clean_20260817_180959_3449a4 completed validation and cleaning pipeline stages with no errors or anomalies reported.",
+  "severity": "INFO",
+  "affected_hospital": "hospital_A",
+  "affected_batch": "batch_20150316",
+  "affected_stage": "CLEANING",
+  "what_happened": "Insufficient evidence to determine root cause",
+  "evidence": [
+    {
+      "evidence_id": "EV-PL-bbdf84e5",
+      "description": "Validation stage initialization event recorded with 0 duration."
+    },
+    {
+      "evidence_id": "EV-PL-9c574c86",
+      "description": "Validation stage completed with a duration of 306ms."
+    },
+    {
+      "evidence_id": "EV-PL-c6b1ed9d",
+      "description": "Cleaning stage initialization event recorded with 0 duration."
+    },
+    {
+      "evidence_id": "EV-PL-894f4bee",
+      "description": "Cleaning stage completed with a duration of 224ms."
+    }
+  ],
+  "likely_causes": [],
+  "confidence": "LOW",
+  "recommended_investigation": "Insufficient evidence to determine root cause",
+  "source_references": [
+    "pipeline_telemetry.duckdb:pipeline_events:bbdf84e5-2339-4e6e-ab46-870c3e0003cd",
+    "pipeline_telemetry.duckdb:pipeline_events:9c574c86-30e9-4186-a4df-de2e5f4d7c41",
+    "pipeline_telemetry.duckdb:pipeline_events:c6b1ed9d-c0c1-4e18-85a4-8ba507060399",
+    "pipeline_telemetry.duckdb:pipeline_events:894f4bee-116d-47dc-93c7-0516947f4a18"
+  ]
+}

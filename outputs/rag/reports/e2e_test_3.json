@@ -1,0 +1,14 @@
+{
+  "incident_id": "INC-9F2B4E1A",
+  "summary": "Insufficient evidence available to determine why run RUN_DOES_NOT_EXIST failed.",
+  "severity": "INFO",
+  "affected_hospital": "UNKNOWN",
+  "affected_batch": "RUN_DOES_NOT_EXIST",
+  "affected_stage": "UNKNOWN",
+  "what_happened": "Insufficient evidence to determine root cause",
+  "evidence": [],
+  "likely_causes": [],
+  "confidence": "LOW",
+  "recommended_investigation": "Insufficient evidence to determine root cause",
+  "source_references": []
+}

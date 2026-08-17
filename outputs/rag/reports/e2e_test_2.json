@@ -1,0 +1,33 @@
+{
+  "incident_id": "INC-3449a401",
+  "summary": "No failure logs or errors were found in the telemetry for run clean_20260817_180959_3449a4.",
+  "severity": "INFO",
+  "affected_hospital": "hospital_A",
+  "affected_batch": "batch_20150316",
+  "affected_stage": "CLEANING",
+  "what_happened": "Insufficient evidence to determine root cause",
+  "evidence": [
+    {
+      "evidence_id": "EV-PL-bbdf84e5",
+      "description": "Validation stage started (duration: 0ms)"
+    },
+    {
+      "evidence_id": "EV-PL-9c574c86",
+      "description": "Validation stage finished (duration: 306ms)"
+    },
+    {
+      "evidence_id": "EV-PL-c6b1ed9d",
+      "description": "Cleaning stage started (duration: 0ms)"
+    },
+    {
+      "evidence_id": "EV-PL-894f4bee",
+      "description": "Cleaning stage finished (duration: 224ms)"
+    }
+  ],
+  "likely_causes": [],
+  "confidence": "LOW",
+  "recommended_investigation": "Insufficient evidence to determine root cause",
+  "source_references": [
+    "pipeline_telemetry.duckdb/pipeline_events"
+  ]
+}

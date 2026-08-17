@@ -136,7 +136,8 @@ def clean_dataset(
             stage=PipelineStage.CLEANING, status=TelemetryStatus.COMPLETED, source_file=input_file_str,
             duration_ms=int((datetime.now() - clean_start_time).total_seconds() * 1000),
             records_in=result.report.metrics.input_rows, records_out=result.report.metrics.output_rows,
-            errors=result.report.metrics.unresolved_records, warnings=result.report.metrics.rows_changed
+            records_rejected=result.report.metrics.unresolved_records, records_corrected=result.report.metrics.rows_changed,
+            errors=0, warnings=0
         )
         telemetry.log_event(clean_end_event)
     except Exception as e:

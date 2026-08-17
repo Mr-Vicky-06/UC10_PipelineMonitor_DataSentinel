@@ -13,17 +13,17 @@ This document is the authoritative source for the current project phase. Do not 
 - Repository/team structure
 - Landing Layer
 - Ingestion Layer
+- Validation Layer (Phase A)
+- Cleaning Layer (Phase B)
+- Transformation & Business Rules (Phase C/D)
+- Storage & Orchestration (Phase E)
+- Telemetry & Local Observability (Phase F)
 
 ## CURRENT PHASE
-**Representative Pipeline Design / Implementation**
+**Operations Monitoring System / Advanced Intelligence (Starting Next)**
 
 ## NEXT
-Pipeline contracts:
-→ validation
-→ cleaning
-→ transformation
-→ feature engineering
-→ business rules
-→ storage
-→ orchestration
-→ telemetry
+- Monitoring Dashboard Integration
+- Anomaly Detection (Isolation Forest)
+- SLA Prediction
+- Root Cause Analysis (RCA) RAG System

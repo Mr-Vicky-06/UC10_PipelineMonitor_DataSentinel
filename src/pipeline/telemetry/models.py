@@ -36,6 +36,11 @@ class TelemetryEvent:
     duration_ms: int = 0
     records_in: int = 0
     records_out: int = 0
+    records_failed: int = 0
+    records_rejected: int = 0
+    records_skipped: int = 0
+    records_corrected: int = 0
+    violations_count: int = 0
     errors: int = 0
     warnings: int = 0
     

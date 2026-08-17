@@ -80,7 +80,7 @@ class BusinessRuleEngine:
             correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
             stage=PipelineStage.BUSINESS_RULES, status=TelemetryStatus.COMPLETED, source_file=source_file,
             duration_ms=int((time.time() - start_t) * 1000), records_in=len(df), records_out=len(df),
-            errors=0
+            violations_count=len(all_violations), errors=0
         )
         self.telemetry.log_event(end_event)
             

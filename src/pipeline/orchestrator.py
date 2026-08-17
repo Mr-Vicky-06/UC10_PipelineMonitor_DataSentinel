@@ -16,7 +16,7 @@ from src.business_rules.engine import BusinessRuleEngine
 from src.business_rules.phase_c_rules import ICDValidityRule, HCPCSValidityRule, BeneficiaryIntegrityRule, ProviderIntegrityRule, AuthorizationMatchRule
 from src.business_rules.rules import ClaimChronologyRule, AdmissionDischargeRule, NegativeAmountRule, PaymentChargeBalanceRule
 from src.pipeline.storage.duckdb_store import ProcessedClaimsStore
-from src.pipeline.telemetry.logger import PipelineTelemetryLogger
+from src.pipeline.telemetry.logger import PipelineTelemetryLogger, setup_pipeline_logging
 
 
 @dataclass
@@ -42,6 +42,7 @@ class PipelineOrchestrator:
         self.duckdb_path = "outputs/pipeline_workspace/processed_claims.duckdb"
 
     def run(self, source_directory: str, run_id: str) -> PipelineRunResult:
+        setup_pipeline_logging()
         start_time = time.time()
         result = PipelineRunResult(run_id=run_id, is_successful=False)
         

@@ -2,10 +2,10 @@
 Data models and report schemas for the Data Cleaning Module.
 """
 
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from enum import Enum
 import json
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional
 
 
 class CleaningStatus(str, Enum):

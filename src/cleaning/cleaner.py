@@ -7,7 +7,7 @@ field-specific casing, date and numeric formatting, and grain-aware deduplicatio
 from datetime import datetime
 import re
 import time
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, List, Optional, Set
 
 import pandas as pd
 
@@ -64,8 +64,8 @@ class DataCleaner:
             return CleaningResult(cleaned_df=cleaned_df, report=report, passed=True)
 
         # Track modified rows and unresolved rows
-        changed_row_indices: Set[int] = set()
-        unresolved_row_indices: Set[int] = set()
+        changed_row_indices: Set[Any] = set()
+        unresolved_row_indices: Set[Any] = set()
 
         # 1. Whitespace & Null Normalization across all columns
         null_set = {str(val).strip().upper() for val in self.config.null_representations}

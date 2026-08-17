@@ -26,6 +26,8 @@ from typing import Dict, List, Optional, Tuple, Union, Generator
 import pandas as pd
 import numpy as np
 import yaml
+import uuid
+from src.pipeline.telemetry import PipelineTelemetryLogger, TelemetryEvent, PipelineStage, TelemetryStatus
 
 
 class TransformationError(Exception):
@@ -52,6 +54,7 @@ class HealthcareTransformer:
         )
         # Registry tracking active and completed batch executions for idempotency
         self.batch_registry: Dict[str, Dict] = {}
+        self.telemetry = PipelineTelemetryLogger.get_instance()
 
     def _load_config(self, config_path: str) -> dict:
         """Load YAML configuration file safely."""
@@ -297,7 +300,7 @@ class HealthcareTransformer:
         }
 
     def transform_claims(
-        self, df: pd.DataFrame, source_file: str = "", batch_id: str = "batch_001", chunk_size: Optional[int] = None, is_retry: bool = False
+        self, df: pd.DataFrame, source_file: str = "", batch_id: str = "batch_001", chunk_size: Optional[int] = None, is_retry: bool = False, run_id: str = "transform_run"
     ) -> Tuple[pd.DataFrame, Dict]:
         """
         Transform claims dataset with idempotency support and optional memory-safe chunking.
@@ -313,7 +316,33 @@ class HealthcareTransformer:
 
         cfg_claims = self.config.get("transformation_stage", {}).get("claims", {})
         req_cols = cfg_claims.get("required_columns", ["CLM_ID"])
-        self.validate_required_columns(df, req_cols, "claims")
+        
+        correlation_id = str(uuid.uuid4())
+        hospital_id = "unknown"
+        if source_file and "HOSP-" in source_file:
+            # Try to extract hospital ID from path if present, otherwise default to unknown
+            parts = source_file.replace('\\', '/').split('/')
+            for p in parts:
+                if p.startswith('HOSP-'):
+                    hospital_id = p
+                    break
+        
+        start_event = TelemetryEvent(
+            correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
+            stage=PipelineStage.TRANSFORMATION, status=TelemetryStatus.STARTED, source_file=source_file
+        )
+        self.telemetry.log_event(start_event)
+        
+        try:
+            self.validate_required_columns(df, req_cols, "claims")
+        except Exception as e:
+            err_event = TelemetryEvent(
+                correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
+                stage=PipelineStage.TRANSFORMATION, status=TelemetryStatus.FAILED, source_file=source_file,
+                duration_ms=int((time.time() - start_t) * 1000), error_type=type(e).__name__, error_message=str(e)
+            )
+            self.telemetry.log_event(err_event)
+            raise
 
         if len(df) == 0:
             empty_df = self.add_lineage_metadata(df, source_file, batch_id)
@@ -369,13 +398,40 @@ class HealthcareTransformer:
                 "status": "SUCCESS_RETRY" if is_retry else "SUCCESS"
             }
             self.batch_registry[batch_id] = metrics
+            
+            end_event = TelemetryEvent(
+                correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
+                stage=PipelineStage.TRANSFORMATION, status=TelemetryStatus.COMPLETED, source_file=source_file,
+                duration_ms=int((time.time() - start_t) * 1000), records_in=records_in, records_out=records_out,
+                errors=len(all_rejections)
+            )
+            self.telemetry.log_event(end_event)
+            
             return transformed_df, metrics
         else:
-            df_res, metrics = self._transform_claims_single(df, source_file, batch_id, offset_idx=0, start_time=start_t)
-            if is_retry:
-                metrics["status"] = "SUCCESS_RETRY"
-            self.batch_registry[batch_id] = metrics
-            return df_res, metrics
+            try:
+                df_res, metrics = self._transform_claims_single(df, source_file, batch_id, offset_idx=0, start_time=start_t)
+                if is_retry:
+                    metrics["status"] = "SUCCESS_RETRY"
+                self.batch_registry[batch_id] = metrics
+                
+                end_event = TelemetryEvent(
+                    correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
+                    stage=PipelineStage.TRANSFORMATION, status=TelemetryStatus.COMPLETED, source_file=source_file,
+                    duration_ms=int((time.time() - start_t) * 1000), records_in=metrics["records_in"], records_out=metrics["records_out"],
+                    errors=len(metrics["rejections"])
+                )
+                self.telemetry.log_event(end_event)
+                
+                return df_res, metrics
+            except Exception as e:
+                err_event = TelemetryEvent(
+                    correlation_id=correlation_id, run_id=run_id, hospital_id=hospital_id, batch_id=batch_id,
+                    stage=PipelineStage.TRANSFORMATION, status=TelemetryStatus.FAILED, source_file=source_file,
+                    duration_ms=int((time.time() - start_t) * 1000), error_type=type(e).__name__, error_message=str(e)
+                )
+                self.telemetry.log_event(err_event)
+                raise
 
     def _transform_claims_single(
         self, df: pd.DataFrame, source_file: str, batch_id: str, offset_idx: int = 0, start_time: Optional[float] = None

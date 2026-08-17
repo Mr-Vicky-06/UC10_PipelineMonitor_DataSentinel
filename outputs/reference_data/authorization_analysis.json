@@ -1,0 +1,11 @@
+{
+    "claims_total": 100000,
+    "claims_with_zero_candidates": 8730,
+    "claims_with_one_candidate": 19901,
+    "claims_with_multiple_candidates": 1562,
+    "claims_with_date_valid_auth": 19026,
+    "claims_with_date_invalid_auth": 2437,
+    "claims_with_provider_compatible_auth": 0,
+    "claims_with_provider_mismatch": 21463,
+    "claims_with_ambiguous_auth": 960
+}

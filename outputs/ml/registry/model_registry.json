@@ -1,0 +1,41 @@
+[
+  {
+    "domain": "VOLUME",
+    "model_name": "CUSUM",
+    "version": "20260817135502",
+    "path": "outputs\\ml\\models\\volume_cusum_v20260817135502.joblib",
+    "features": [
+      "claim_volume",
+      "beneficiary_volume",
+      "provider_volume"
+    ],
+    "status": "PROMOTED_FOR_INFERENCE",
+    "trained_on": "Days 1-25 Simulation Baseline"
+  },
+  {
+    "domain": "DISTRIBUTION",
+    "model_name": "KS_Proxy",
+    "version": "20260817135502",
+    "path": "outputs\\ml\\models\\distribution_ks_proxy_v20260817135502.joblib",
+    "features": [
+      "claim_amount_mean",
+      "claim_amount_median",
+      "claim_amount_total"
+    ],
+    "status": "PROMOTED_FOR_INFERENCE",
+    "trained_on": "Days 1-25 Simulation Baseline"
+  },
+  {
+    "domain": "OPERATIONAL",
+    "model_name": "LOF",
+    "version": "20260817135502",
+    "path": "outputs\\ml\\models\\operational_lof_v20260817135502.joblib",
+    "features": [
+      "processing_duration",
+      "throughput",
+      "failure_rate"
+    ],
+    "status": "PROMOTED_FOR_INFERENCE",
+    "trained_on": "Days 1-25 Simulation Baseline"
+  }
+]

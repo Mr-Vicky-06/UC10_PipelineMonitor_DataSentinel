@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional, Union
 import duckdb
 
-from src.monitoring.models import MetricRecord, MetricsRepositoryError
+from src.monitoring.models import MetricRecord, MetricsRepositoryError, AnomalyEvent
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +40,7 @@ class MetricsRepository:
 
         self._conn = duckdb.connect(self.db_path)
         self.initialize_schema()
+        self.initialize_anomaly_schema()
 
     def _get_connection(self):
         """Obtain the active database connection."""
@@ -79,6 +80,39 @@ class MetricsRepository:
         except Exception as e:
             logger.error(f"Failed to initialize MetricsRepository schema: {str(e)}")
             raise MetricsRepositoryError(f"Schema initialization failed: {str(e)}") from e
+
+    def initialize_anomaly_schema(self) -> None:
+        """Initialize the anomaly events database table and indexes if they do not exist."""
+        try:
+            conn = self._get_connection()
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS anomaly_events (
+                    anomaly_id VARCHAR PRIMARY KEY,
+                    run_id VARCHAR,
+                    hospital_id VARCHAR,
+                    batch_id VARCHAR,
+                    stage VARCHAR,
+                    feature_name VARCHAR,
+                    detector VARCHAR,
+                    model_name VARCHAR,
+                    model_version VARCHAR,
+                    anomaly_type VARCHAR,
+                    observed_value DOUBLE,
+                    expected_value DOUBLE,
+                    baseline_value DOUBLE,
+                    anomaly_score DOUBLE,
+                    confidence_score DOUBLE,
+                    severity VARCHAR,
+                    detected_at TIMESTAMP,
+                    evidence VARCHAR
+                );
+            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_anomaly_events_timestamp ON anomaly_events(detected_at);")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_anomaly_events_run_batch ON anomaly_events(run_id, batch_id);")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_anomaly_events_lookup ON anomaly_events(hospital_id, stage, feature_name);")
+        except Exception as e:
+            logger.error(f"Failed to initialize anomaly_events schema: {str(e)}")
+            raise MetricsRepositoryError(f"Anomaly Schema initialization failed: {str(e)}") from e
 
     def _validate_metric(self, metric: MetricRecord) -> None:
         """Validate required fields of a MetricRecord prior to insertion."""
@@ -185,6 +219,108 @@ class MetricsRepository:
                 pass
             logger.error(f"Failed bulk insertion of {len(metrics)} metrics: {str(e)}")
             raise MetricsRepositoryError(f"Bulk metric save failed: {str(e)}") from e
+
+    def save_anomaly(self, anomaly: AnomalyEvent) -> str:
+        """
+        Persist a single AnomalyEvent to the repository.
+        Returns the inserted anomaly_id.
+        """
+        evidence_json = json.dumps(anomaly.evidence or {})
+        ts = anomaly.detected_at
+
+        try:
+            conn = self._get_connection()
+            existing = conn.execute("SELECT COUNT(*) FROM anomaly_events WHERE anomaly_id = ?", [anomaly.anomaly_id]).fetchone()
+            if existing and existing[0] > 0:
+                raise MetricsRepositoryError(f"Duplicate anomaly insertion blocked for anomaly_id='{anomaly.anomaly_id}'.")
+
+            conn.execute("""
+                INSERT INTO anomaly_events (
+                    anomaly_id, run_id, hospital_id, batch_id, stage,
+                    feature_name, detector, model_name, model_version,
+                    anomaly_type, observed_value, expected_value, baseline_value,
+                    anomaly_score, confidence_score, severity, detected_at, evidence
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, [
+                anomaly.anomaly_id,
+                anomaly.run_id,
+                anomaly.hospital_id,
+                anomaly.batch_id,
+                anomaly.stage,
+                anomaly.feature_name,
+                anomaly.detector,
+                anomaly.model_name,
+                anomaly.model_version,
+                anomaly.anomaly_type,
+                float(anomaly.observed_value),
+                float(anomaly.expected_value),
+                float(anomaly.baseline_value),
+                float(anomaly.anomaly_score),
+                float(anomaly.confidence_score),
+                anomaly.severity,
+                ts,
+                evidence_json
+            ])
+            return anomaly.anomaly_id
+        except MetricsRepositoryError:
+            raise
+        except Exception as e:
+            logger.error(f"Error saving anomaly '{anomaly.anomaly_id}': {str(e)}")
+            raise MetricsRepositoryError(f"Failed to save anomaly: {str(e)}") from e
+
+    def save_anomalies(self, anomalies: List[AnomalyEvent]) -> int:
+        """
+        Persist multiple AnomalyEvent items in a single transaction.
+        Returns the count of successfully saved records.
+        """
+        if not anomalies:
+            return 0
+
+        rows = []
+        for a in anomalies:
+            evidence_json = json.dumps(a.evidence or {})
+            rows.append((
+                a.anomaly_id,
+                a.run_id,
+                a.hospital_id,
+                a.batch_id,
+                a.stage,
+                a.feature_name,
+                a.detector,
+                a.model_name,
+                a.model_version,
+                a.anomaly_type,
+                float(a.observed_value),
+                float(a.expected_value),
+                float(a.baseline_value),
+                float(a.anomaly_score),
+                float(a.confidence_score),
+                a.severity,
+                a.detected_at,
+                evidence_json
+            ))
+
+        try:
+            conn = self._get_connection()
+            conn.execute("BEGIN TRANSACTION")
+            for r in rows:
+                conn.execute("""
+                    INSERT INTO anomaly_events (
+                        anomaly_id, run_id, hospital_id, batch_id, stage,
+                        feature_name, detector, model_name, model_version,
+                        anomaly_type, observed_value, expected_value, baseline_value,
+                        anomaly_score, confidence_score, severity, detected_at, evidence
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, r)
+            conn.execute("COMMIT")
+            return len(rows)
+        except Exception as e:
+            try:
+                self._get_connection().execute("ROLLBACK")
+            except Exception:
+                pass
+            logger.error(f"Failed bulk insertion of {len(anomalies)} anomalies: {str(e)}")
+            raise MetricsRepositoryError(f"Bulk anomaly save failed: {str(e)}") from e
 
     def _row_to_record(self, row: tuple) -> MetricRecord:
         """Convert database tuple row to MetricRecord."""

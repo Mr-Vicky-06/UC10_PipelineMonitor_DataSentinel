@@ -4,10 +4,12 @@ import logging
 import datetime
 from pathlib import Path
 from typing import List, Dict, Any
+import uuid
 from .discovery import BatchDiscoverer
 from .reader import BatchReader
 from .models import DiscoveredBatchSource, IngestedBatch
 from .errors import IdempotencyError, IngestionError
+from src.pipeline.telemetry import PipelineTelemetryLogger, TelemetryEvent, PipelineStage, TelemetryStatus
 
 # Basic logging setup for ingestion
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - INGESTION - %(levelname)s - %(message)s")
@@ -32,6 +34,7 @@ class IngestionService:
         # Ensure output workspace exists
         self.output_root.mkdir(parents=True, exist_ok=True)
         self._state_cache: Dict[str, Any] = self._load_state()
+        self.telemetry = PipelineTelemetryLogger.get_instance()
 
     def _load_state(self) -> Dict[str, Any]:
         """Loads idempotency state from JSON."""
@@ -52,23 +55,25 @@ class IngestionService:
         """Deterministic identity for idempotency."""
         return f"{source.hospital_id}::{source.batch_id}"
 
-    def _telemetry_hook(self, batch: IngestedBatch, duration_sec: float):
+    def _telemetry_hook(self, batch: IngestedBatch, duration_sec: float, status: TelemetryStatus, correlation_id: str, error_msg: str = ""):
         """
-        Integration point for future telemetry developer.
-        Captures essential metadata per the contract.
+        Emits structured telemetry to the operational DuckDB store.
         """
-        # Downstream developers can replace this with OpenTelemetry/Prometheus logic
-        metadata = {
-            "batch_id": batch.batch_id,
-            "hospital_id": batch.hospital_id,
-            "source_file": batch.source_file,
-            "service_date": str(batch.service_date),
-            "ingestion_timestamp": str(batch.ingestion_timestamp),
-            "records_in": batch.records_in,
-            "duration_sec": duration_sec,
-            "status": batch.ingestion_status
-        }
-        logger.info(f"Telemetry Event Emit: {metadata}")
+        event = TelemetryEvent(
+            correlation_id=correlation_id,
+            run_id=self.run_id,
+            hospital_id=batch.hospital_id if batch else "",
+            batch_id=batch.batch_id if batch else "",
+            stage=PipelineStage.INGESTION,
+            status=status,
+            source_file=batch.source_file if batch else "",
+            service_date=str(batch.service_date) if batch and batch.service_date else None,
+            duration_ms=int(duration_sec * 1000),
+            records_in=batch.records_in if batch else 0,
+            records_out=batch.records_in if batch and status == TelemetryStatus.COMPLETED else 0,
+            error_message=error_msg
+        )
+        self.telemetry.log_event(event)
 
     def run(self) -> List[IngestedBatch]:
         """
@@ -91,6 +96,20 @@ class IngestionService:
                 
             logger.info(f"Ingesting {batch_identity}...")
             start_time = datetime.datetime.now()
+            correlation_id = str(uuid.uuid4())
+            
+            # Log STARTED event
+            start_event = TelemetryEvent(
+                correlation_id=correlation_id,
+                run_id=self.run_id,
+                hospital_id=source.hospital_id,
+                batch_id=source.batch_id,
+                stage=PipelineStage.INGESTION,
+                status=TelemetryStatus.STARTED,
+                source_file=source.source_file,
+                service_date=str(source.service_date)
+            )
+            self.telemetry.log_event(start_event)
             
             try:
                 # Use the reader to load the dataframe
@@ -106,13 +125,27 @@ class IngestionService:
                 
                 # Emit telemetry
                 duration = (datetime.datetime.now() - start_time).total_seconds()
-                self._telemetry_hook(batch, duration)
+                self._telemetry_hook(batch, duration, TelemetryStatus.COMPLETED, correlation_id)
                 
                 ingested_batches.append(batch)
                 
             except IngestionError as e:
                 logger.error(f"Ingestion failed for {batch_identity}: {e}")
-                # We log the error but allow the pipeline to continue with other files.
-                # A production system might route this to a Dead Letter Queue.
+                duration = (datetime.datetime.now() - start_time).total_seconds()
+                # Log FAILED event with empty batch placeholder since it failed
+                err_event = TelemetryEvent(
+                    correlation_id=correlation_id,
+                    run_id=self.run_id,
+                    hospital_id=source.hospital_id,
+                    batch_id=source.batch_id,
+                    stage=PipelineStage.INGESTION,
+                    status=TelemetryStatus.FAILED,
+                    source_file=source.source_file,
+                    service_date=str(source.service_date),
+                    duration_ms=int(duration * 1000),
+                    error_type="IngestionError",
+                    error_message=str(e)
+                )
+                self.telemetry.log_event(err_event)
                 
         return ingested_batches

@@ -11,6 +11,7 @@ import uuid
 import pandas as pd
 
 from src.validation import ValidationStatus, validate_dataset
+from src.pipeline.telemetry import PipelineTelemetryLogger, TelemetryEvent, PipelineStage, TelemetryStatus
 
 from .cleaner import DataCleaner
 from .loader import load_cleaning_config_by_name
@@ -40,9 +41,28 @@ def clean_dataset(
 
     # Determine file path string if applicable
     input_file_str = str(input_path_or_df) if isinstance(input_path_or_df, (str, Path)) else "In-Memory DataFrame"
+    telemetry = PipelineTelemetryLogger.get_instance()
+    
+    val_corr_id = str(uuid.uuid4())
+    clean_corr_id = str(uuid.uuid4())
+    # Extract hospital_id from path if possible, else "unknown"
+    hospital_id = "unknown"
+    batch_id = "unknown"
+    if isinstance(input_path_or_df, (str, Path)):
+        p = Path(input_path_or_df)
+        if len(p.parts) >= 2:
+            batch_id = p.stem
+            hospital_id = p.parent.name
 
     # 1. Early Gate: Schema Validation
     if run_schema_validation:
+        val_start = datetime.now()
+        val_start_event = TelemetryEvent(
+            correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+            stage=PipelineStage.VALIDATION, status=TelemetryStatus.STARTED, source_file=input_file_str
+        )
+        telemetry.log_event(val_start_event)
+        
         val_result = validate_dataset(dataset, input_path_or_df, schemas_dir=schemas_dir)
         if not val_result.passed:
             # Schema Validation failed -> Halt cleaning and quarantine
@@ -63,7 +83,25 @@ def clean_dataset(
                 warnings=[f"Schema validation failed with {val_result.error_count} error(s). Cleaning halted."],
                 schema_validation_passed=False,
             )
+            
+            val_end_event = TelemetryEvent(
+                correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+                stage=PipelineStage.VALIDATION, status=TelemetryStatus.FAILED, source_file=input_file_str,
+                duration_ms=int((datetime.now() - val_start).total_seconds() * 1000),
+                records_in=val_result.total_rows, errors=val_result.error_count,
+                error_type="ValidationError", error_message="Schema validation failed"
+            )
+            telemetry.log_event(val_end_event)
+            
             return CleaningResult(cleaned_df=pd.DataFrame(), report=report, passed=False)
+        else:
+            val_end_event = TelemetryEvent(
+                correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+                stage=PipelineStage.VALIDATION, status=TelemetryStatus.COMPLETED, source_file=input_file_str,
+                duration_ms=int((datetime.now() - val_start).total_seconds() * 1000),
+                records_in=val_result.total_rows, records_out=val_result.total_rows, errors=val_result.error_count
+            )
+            telemetry.log_event(val_end_event)
 
     # 2. Load In-Memory DataFrame
     if isinstance(input_path_or_df, pd.DataFrame):
@@ -82,7 +120,35 @@ def clean_dataset(
     # 3. Load Cleaning Config & Execute Cleaner
     config = load_cleaning_config_by_name(dataset, config_dir=cleaning_configs_dir)
     cleaner = DataCleaner(config)
-    result = cleaner.clean(raw_df, run_id=active_run_id, input_file=input_file_str, output_file=str(output_path) if output_path else None)
+    
+    clean_start_time = datetime.now()
+    clean_start_event = TelemetryEvent(
+        correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+        stage=PipelineStage.CLEANING, status=TelemetryStatus.STARTED, source_file=input_file_str
+    )
+    telemetry.log_event(clean_start_event)
+    
+    try:
+        result = cleaner.clean(raw_df, run_id=active_run_id, input_file=input_file_str, output_file=str(output_path) if output_path else None)
+        
+        clean_end_event = TelemetryEvent(
+            correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+            stage=PipelineStage.CLEANING, status=TelemetryStatus.COMPLETED, source_file=input_file_str,
+            duration_ms=int((datetime.now() - clean_start_time).total_seconds() * 1000),
+            records_in=result.report.metrics.input_rows, records_out=result.report.metrics.output_rows,
+            records_rejected=result.report.metrics.unresolved_records, records_corrected=result.report.metrics.rows_changed,
+            errors=0, warnings=0
+        )
+        telemetry.log_event(clean_end_event)
+    except Exception as e:
+        clean_err_event = TelemetryEvent(
+            correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
+            stage=PipelineStage.CLEANING, status=TelemetryStatus.FAILED, source_file=input_file_str,
+            duration_ms=int((datetime.now() - clean_start_time).total_seconds() * 1000),
+            error_type=type(e).__name__, error_message=str(e)
+        )
+        telemetry.log_event(clean_err_event)
+        raise
 
     # 4. Resolve Output Directories if not provided
     if output_base_dir is None:

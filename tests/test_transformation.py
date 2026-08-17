@@ -36,8 +36,10 @@ class TestHealthcareTransformer(unittest.TestCase):
             "CLM_FROM_DT": ["20240115", "2024-02-20", "03/25/2024", "", None]
         })
         transformed = self.transformer.normalize_dates(df, ["CLM_FROM_DT"])
-        expected = ["2024-01-15", "2024-02-20", "2024-03-25", None, None]
-        self.assertEqual(list(transformed["CLM_FROM_DT"]), expected)
+        expected = ["2024-01-15", "2024-02-20", "2024-03-25"]
+        self.assertEqual(list(transformed["CLM_FROM_DT"])[:3], expected)
+        self.assertTrue(pd.isna(transformed["CLM_FROM_DT"].iloc[3]))
+        self.assertTrue(pd.isna(transformed["CLM_FROM_DT"].iloc[4]))
 
     def test_02_numeric_normalization(self):
         """Verify numeric values with currency symbols and commas are converted to floats."""

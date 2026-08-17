@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-08-16T13:52:16.410201Z",
+  "random_seed": 42,
+  "total_records": 1000,
+  "clean_records": 700,
+  "anomalous_records": 300,
+  "distribution": {
+    "BR-DATE-001": 75,
+    "BR-DATE-002": 60,
+    "BR-AMT-001": 75,
+    "BR-AMT-002": 60,
+    "MULTI_RULE": 30
+  }
+}

@@ -1,0 +1,362 @@
+{
+  "execution_time_seconds": 3.536747694015503,
+  "records_per_second": 282.745642753112,
+  "phase_b_regression_passed": true,
+  "metrics": {
+    "BR-REF-001": {
+      "TP": 30,
+      "TN": 970,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Scenarios": {
+        "CLEAN": {
+          "total": 700,
+          "correct": 697
+        },
+        "INVALID_ICD": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_HCPCS": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_BENE": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_PROVIDER": {
+          "total": 30,
+          "correct": 29
+        },
+        "MISSING_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "BOUNDARY_EXACT_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_AFTER_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "EXPIRED_AUTH": {
+          "total": 28,
+          "correct": 28
+        },
+        "BOUNDARY_EXACT_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_BEFORE_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "NOT_YET_EFFECTIVE": {
+          "total": 28,
+          "correct": 28
+        },
+        "INVALID_AUTH_STATUS": {
+          "total": 30,
+          "correct": 30
+        },
+        "AMBIGUOUS_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_INPUTS": {
+          "total": 30,
+          "correct": 30
+        }
+      }
+    },
+    "BR-REF-002": {
+      "TP": 30,
+      "TN": 970,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Scenarios": {
+        "CLEAN": {
+          "total": 700,
+          "correct": 700
+        },
+        "INVALID_ICD": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_HCPCS": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_BENE": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_PROVIDER": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "BOUNDARY_EXACT_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_AFTER_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "EXPIRED_AUTH": {
+          "total": 28,
+          "correct": 28
+        },
+        "BOUNDARY_EXACT_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_BEFORE_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "NOT_YET_EFFECTIVE": {
+          "total": 28,
+          "correct": 28
+        },
+        "INVALID_AUTH_STATUS": {
+          "total": 30,
+          "correct": 30
+        },
+        "AMBIGUOUS_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_INPUTS": {
+          "total": 30,
+          "correct": 30
+        }
+      }
+    },
+    "BR-REF-003": {
+      "TP": 30,
+      "TN": 970,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Scenarios": {
+        "CLEAN": {
+          "total": 700,
+          "correct": 700
+        },
+        "INVALID_ICD": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_HCPCS": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_BENE": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_PROVIDER": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "BOUNDARY_EXACT_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_AFTER_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "EXPIRED_AUTH": {
+          "total": 28,
+          "correct": 28
+        },
+        "BOUNDARY_EXACT_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_BEFORE_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "NOT_YET_EFFECTIVE": {
+          "total": 28,
+          "correct": 28
+        },
+        "INVALID_AUTH_STATUS": {
+          "total": 30,
+          "correct": 30
+        },
+        "AMBIGUOUS_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_INPUTS": {
+          "total": 30,
+          "correct": 30
+        }
+      }
+    },
+    "BR-REF-004": {
+      "TP": 30,
+      "TN": 970,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Scenarios": {
+        "CLEAN": {
+          "total": 700,
+          "correct": 700
+        },
+        "INVALID_ICD": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_HCPCS": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_BENE": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_PROVIDER": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "BOUNDARY_EXACT_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_AFTER_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "EXPIRED_AUTH": {
+          "total": 28,
+          "correct": 28
+        },
+        "BOUNDARY_EXACT_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_BEFORE_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "NOT_YET_EFFECTIVE": {
+          "total": 28,
+          "correct": 28
+        },
+        "INVALID_AUTH_STATUS": {
+          "total": 30,
+          "correct": 30
+        },
+        "AMBIGUOUS_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_INPUTS": {
+          "total": 30,
+          "correct": 30
+        }
+      }
+    },
+    "BR-AUTH-001": {
+      "TP": 208,
+      "TN": 792,
+      "FP": 0,
+      "FN": 0,
+      "Precision": 1.0,
+      "Recall": 1.0,
+      "F1": 1.0,
+      "Scenarios": {
+        "CLEAN": {
+          "total": 700,
+          "correct": 700
+        },
+        "INVALID_ICD": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_HCPCS": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_BENE": {
+          "total": 30,
+          "correct": 30
+        },
+        "INVALID_PROVIDER": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "BOUNDARY_EXACT_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_AFTER_EXP": {
+          "total": 1,
+          "correct": 1
+        },
+        "EXPIRED_AUTH": {
+          "total": 28,
+          "correct": 28
+        },
+        "BOUNDARY_EXACT_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "BOUNDARY_BEFORE_EFF": {
+          "total": 1,
+          "correct": 1
+        },
+        "NOT_YET_EFFECTIVE": {
+          "total": 28,
+          "correct": 28
+        },
+        "INVALID_AUTH_STATUS": {
+          "total": 30,
+          "correct": 30
+        },
+        "AMBIGUOUS_AUTH": {
+          "total": 30,
+          "correct": 30
+        },
+        "MISSING_INPUTS": {
+          "total": 30,
+          "correct": 30
+        }
+      }
+    }
+  }
+}

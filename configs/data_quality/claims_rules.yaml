@@ -1,0 +1,221 @@
+# DataSentinal — Claims Data Quality Validation Rules (Layer 2 / Component 1)
+# Evaluates processed healthcare claims at claim-line grain (CLM_ID + CLM_LINE_NUM)
+
+dataset_name: claims
+version: "1.0.0"
+description: "Data quality validation contract and rule set for CMS inpatient/outpatient claims."
+
+# ==============================================================================
+# RULE GROUP A: COMPLETENESS
+# ==============================================================================
+completeness_rules:
+  - id: DQ-COMP-001
+    name: mandatory_beneficiary_id
+    field: BENE_ID
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Beneficiary ID (BENE_ID) must never be null or blank."
+
+  - id: DQ-COMP-002
+    name: mandatory_claim_id
+    field: CLM_ID
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Claim ID (CLM_ID) must never be null or blank."
+
+  - id: DQ-COMP-003
+    name: mandatory_claim_line_number
+    field: CLM_LINE_NUM
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Claim Line Number (CLM_LINE_NUM) must never be null or blank."
+
+  - id: DQ-COMP-004
+    name: mandatory_provider_number
+    field: PRVDR_NUM
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Provider Number (PRVDR_NUM) must never be null or blank."
+
+  - id: DQ-COMP-005
+    name: mandatory_claim_from_date
+    field: CLM_FROM_DT
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Claim From Date (CLM_FROM_DT) must never be null or blank."
+
+  - id: DQ-COMP-006
+    name: mandatory_payment_amount
+    field: CLM_PMT_AMT
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Claim Payment Amount (CLM_PMT_AMT) must never be null or blank."
+
+  - id: DQ-COMP-007
+    name: mandatory_total_charge_amount
+    field: CLM_TOT_CHRG_AMT
+    threshold_null_pct: 0.0
+    threshold_blank_pct: 0.0
+    severity: ERROR
+    description: "Total Charge Amount (CLM_TOT_CHRG_AMT) must never be null or blank."
+
+# ==============================================================================
+# RULE GROUP B: DUPLICATES / UNIQUENESS
+# ==============================================================================
+uniqueness_rules:
+  - id: DQ-DUP-001
+    name: claim_line_composite_uniqueness
+    fields:
+      - CLM_ID
+      - CLM_LINE_NUM
+    threshold_duplicate_pct: 0.0
+    severity: ERROR
+    description: "Each claim line identified by (CLM_ID, CLM_LINE_NUM) must be unique. Repeated CLM_ID with distinct CLM_LINE_NUM is valid."
+
+# ==============================================================================
+# RULE GROUP C: FINANCIAL & AMOUNT VALIDATION
+# ==============================================================================
+financial_rules:
+  - id: DQ-FIN-001
+    name: non_negative_payment_amount
+    field: CLM_PMT_AMT
+    allow_negative: false
+    min_value: 0.0
+    severity: ERROR
+    description: "Claim Payment Amount must be non-negative (>= 0)."
+
+  - id: DQ-FIN-002
+    name: non_negative_total_charge_amount
+    field: CLM_TOT_CHRG_AMT
+    allow_negative: false
+    min_value: 0.0
+    severity: ERROR
+    description: "Total Claim Charge Amount must be non-negative (>= 0)."
+
+  - id: DQ-FIN-003
+    name: non_negative_primary_payer_amount
+    field: NCH_PRMRY_PYR_CLM_PD_AMT
+    allow_negative: false
+    min_value: 0.0
+    severity: ERROR
+    description: "Primary Payer Claim Paid Amount must be non-negative (>= 0)."
+
+  - id: DQ-FIN-004
+    name: payment_within_total_charge
+    payment_field: CLM_PMT_AMT
+    charge_field: CLM_TOT_CHRG_AMT
+    severity: WARNING
+    description: "Payment amount should not exceed total charge amount."
+
+# ==============================================================================
+# RULE GROUP D & E: CLINICAL CODES (ICD & CPT / HCPCS)
+# ==============================================================================
+clinical_code_rules:
+  - id: DQ-CLIN-001
+    name: principal_icd_diagnosis_code_validity
+    field: PRNCPAL_DGNS_CD
+    code_system: ICD-10-CM
+    reference_dataset: icd_reference
+    reference_field: code
+    severity: WARNING
+    on_missing_reference: REPORT_DEPENDENCY
+    description: "Principal ICD Diagnosis Code should be a valid ICD code according to the reference vocabulary."
+
+  - id: DQ-CLIN-002
+    name: admitting_icd_diagnosis_code_validity
+    field: ADMTG_DGNS_CD
+    code_system: ICD-10-CM
+    reference_dataset: icd_reference
+    reference_field: code
+    severity: WARNING
+    on_missing_reference: REPORT_DEPENDENCY
+    description: "Admitting ICD Diagnosis Code should be a valid ICD code according to the reference vocabulary."
+
+  - id: DQ-CLIN-003
+    name: procedure_hcpcs_cpt_code_validity
+    field: HCPCS_CD
+    code_system: HCPCS/CPT
+    reference_dataset: hcpcs_reference
+    reference_field: code
+    severity: WARNING
+    on_missing_reference: REPORT_DEPENDENCY
+    description: "Procedure Code (HCPCS_CD) should be a valid HCPCS/CPT code in the procedure reference dictionary."
+
+# ==============================================================================
+# RULE GROUP F: DATE QUALITY & LOGICAL CONSISTENCY
+# ==============================================================================
+date_logic_rules:
+  - id: DQ-DATE-001
+    name: service_date_ordering
+    from_date_field: CLM_FROM_DT
+    thru_date_field: CLM_THRU_DT
+    operator: "<="
+    severity: ERROR
+    description: "Claim From Date (CLM_FROM_DT) must precede or equal Claim Through Date (CLM_THRU_DT)."
+
+  - id: DQ-DATE-002
+    name: admission_discharge_ordering
+    admission_date_field: CLM_ADMSN_DT
+    discharge_date_field: NCH_BENE_DSCHRG_DT
+    operator: "<="
+    severity: ERROR
+    description: "Admission Date (CLM_ADMSN_DT) must precede or equal Discharge Date (NCH_BENE_DSCHRG_DT) when both are populated."
+
+  - id: DQ-DATE-003
+    name: service_after_admission
+    admission_date_field: CLM_ADMSN_DT
+    service_date_field: CLM_FROM_DT
+    operator: "<="
+    severity: WARNING
+    description: "Service date should be on or after admission date."
+
+  - id: DQ-DATE-004
+    name: no_future_service_dates
+    date_field: CLM_FROM_DT
+    allow_future: false
+    severity: ERROR
+    description: "Claim service from date must not be in the future."
+
+# ==============================================================================
+# RULE GROUP G: REFERENTIAL INTEGRITY (DETERMINISTIC CROSS-DATASET)
+# ==============================================================================
+referential_integrity_rules:
+  - id: DQ-REF-001
+    name: hospital_provider_reference
+    foreign_key: PRVDR_NUM
+    reference_dataset: hospital_mapping
+    reference_key: PRVDR_NUM
+    severity: ERROR
+    description: "Provider Number (PRVDR_NUM) must exist in the authoritative hospital provider mapping table."
+
+  - id: DQ-REF-002
+    name: claims_authorization_referential_integrity
+    match_key: BENE_ID
+    reference_dataset: authorization
+    reference_match_key: BENE_ID
+    provider_field: PRVDR_NUM
+    reference_provider_field: PRF_PHYSN_NPI
+    procedure_field: HCPCS_CD
+    reference_procedure_field: HCPCS_CD
+    service_date_field: CLM_FROM_DT
+    reference_eff_date_field: AUTH_EFF_DT
+    reference_exp_date_field: AUTH_EXP_DT
+    reference_status_field: AUTH_STATUS_CD
+    valid_auth_status: APPROVED
+    severity: ERROR
+    description: "Claims linking to Prior Authorization must have valid BENE_ID, matching Provider, matching HCPCS Procedure, active APPROVED status, and service date within [AUTH_EFF_DT, AUTH_EXP_DT]."
+
+# ==============================================================================
+# RULE GROUP H: SCHEMA VALIDATION GATE INTEGRATION
+# ==============================================================================
+schema_gate:
+  enabled: true
+  severity_on_fail: CRITICAL
+  severity_on_warning: WARNING
+  description: "Captures upstream structural Schema Validation status (PASS/WARNING/FAIL) into the overall quality report."

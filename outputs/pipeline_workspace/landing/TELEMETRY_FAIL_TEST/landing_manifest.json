@@ -1,0 +1,26 @@
+{
+  "run_id": "TELEMETRY_FAIL_TEST",
+  "timestamp": "2026-08-17T04:34:19.067382",
+  "source_root": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\source",
+  "landing_root": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing",
+  "total_source_files": 1,
+  "total_landed_files": 1,
+  "total_bytes": 66667,
+  "hospitals": [
+    "HOSP-TEST"
+  ],
+  "files": [
+    {
+      "hospital_id": "HOSP-TEST",
+      "filename": "batch_20261115.csv",
+      "service_date": "2026-11-15",
+      "source_path": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\source\\TELEMETRY_FAIL_TEST\\HOSP-TEST\\batch_20261115.csv",
+      "landing_path": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\TELEMETRY_FAIL_TEST\\HOSP-TEST\\batch_20261115.csv",
+      "size_bytes": 66667,
+      "source_sha256": "3ff16f41ef8760954c0bcda2fd5fb47e6193b6a2cad59f38c82e40300def4af3",
+      "landing_sha256": "3ff16f41ef8760954c0bcda2fd5fb47e6193b6a2cad59f38c82e40300def4af3",
+      "status": "LANDED",
+      "landed_at": "2026-08-17T04:34:18.982553"
+    }
+  ]
+}

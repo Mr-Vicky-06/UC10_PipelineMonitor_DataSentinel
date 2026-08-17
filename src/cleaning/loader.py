@@ -4,6 +4,7 @@ Configuration loader for the Data Cleaning Module.
 
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
+
 import yaml
 
 from .models import CleaningConfig
@@ -57,7 +58,9 @@ def load_cleaning_config_by_name(
 ) -> CleaningConfig:
     """Find and load cleaning configuration by dataset name."""
     if config_dir is None:
-        config_dir = Path(__file__).resolve().parent.parent.parent / "configs" / "cleaning"
+        config_dir = (
+            Path(__file__).resolve().parent.parent.parent / "configs" / "cleaning"
+        )
     else:
         config_dir = Path(config_dir)
 

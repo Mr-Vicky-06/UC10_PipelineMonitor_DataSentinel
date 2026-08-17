@@ -2,7 +2,7 @@
 data/raw/
 data/optional/
 data/
-outputs/
+# outputs/
 scratch/
 
 # Python caching

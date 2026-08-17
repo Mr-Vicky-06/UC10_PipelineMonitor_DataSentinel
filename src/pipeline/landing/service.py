@@ -5,6 +5,8 @@ from typing import List
 from .models import LandedBatch, LandingStatus
 from .copier import BatchCopier
 from .manifest import LandingManifest
+import uuid
+from src.pipeline.telemetry import PipelineTelemetryLogger, TelemetryEvent, PipelineStage, TelemetryStatus
 
 class LandingService:
     """Orchestrates the discovery and copying of master data to the landing area."""
@@ -17,6 +19,7 @@ class LandingService:
         
         self.run_source_dir = self.source_root / self.run_id
         self.run_landing_dir = self.output_root / self.run_id
+        self.telemetry = PipelineTelemetryLogger.get_instance()
         
         # We reuse the same regex logic from ingestion discovery to identify batch files
         self.filename_pattern = re.compile(r"^batch_(\d{8})\.csv$")
@@ -43,6 +46,22 @@ class LandingService:
             landing_path = self.run_landing_dir / hospital_id / path.name
             
             try:
+                start_time = datetime.datetime.now()
+                correlation_id = str(uuid.uuid4())
+                
+                # Log STARTED event
+                start_event = TelemetryEvent(
+                    correlation_id=correlation_id,
+                    run_id=self.run_id,
+                    hospital_id=hospital_id,
+                    batch_id=f"batch_{date_str}", # Standardized batch ID extraction
+                    stage=PipelineStage.LANDING,
+                    status=TelemetryStatus.STARTED,
+                    source_file=path.name,
+                    service_date=str(service_date)
+                )
+                self.telemetry.log_event(start_event)
+                
                 status, src_hash, dst_hash = self.copier.safe_copy(path, landing_path)
                 
                 batch = LandedBatch(
@@ -59,7 +78,36 @@ class LandingService:
                     status=status
                 )
                 landed_batches.append(batch)
+                
+                duration = (datetime.datetime.now() - start_time).total_seconds()
+                end_event = TelemetryEvent(
+                    correlation_id=correlation_id,
+                    run_id=self.run_id,
+                    hospital_id=hospital_id,
+                    batch_id=f"batch_{date_str}",
+                    stage=PipelineStage.LANDING,
+                    status=TelemetryStatus.COMPLETED,
+                    source_file=path.name,
+                    service_date=str(service_date),
+                    duration_ms=int(duration * 1000)
+                )
+                self.telemetry.log_event(end_event)
             except Exception as e:
+                duration = (datetime.datetime.now() - start_time).total_seconds()
+                err_event = TelemetryEvent(
+                    correlation_id=correlation_id,
+                    run_id=self.run_id,
+                    hospital_id=hospital_id,
+                    batch_id=f"batch_{date_str}",
+                    stage=PipelineStage.LANDING,
+                    status=TelemetryStatus.FAILED,
+                    source_file=path.name,
+                    service_date=str(service_date),
+                    duration_ms=int(duration * 1000),
+                    error_type=type(e).__name__,
+                    error_message=str(e)
+                )
+                self.telemetry.log_event(err_event)
                 # To fail the pipeline on conflict, we re-raise.
                 raise
                 

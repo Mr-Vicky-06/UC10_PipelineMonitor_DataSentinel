@@ -1,0 +1,45 @@
+{
+    "overall": {
+        "TP": 18,
+        "TN": 665,
+        "FP": 35,
+        "FN": 282,
+        "Precision": 0.33962264150943394,
+        "Recall": 0.06,
+        "F1": 0.10198300283286119,
+        "FPR": 0.05,
+        "Specificity": 0.95
+    },
+    "per_category": {
+        "EXTREME_AMOUNT": {
+            "TP": 3,
+            "FN": 57,
+            "Recall": 0.05,
+            "Total": 60
+        },
+        "NEGATIVE_AMOUNT": {
+            "TP": 6,
+            "FN": 54,
+            "Recall": 0.1,
+            "Total": 60
+        },
+        "ZERO_AMOUNT": {
+            "TP": 1,
+            "FN": 59,
+            "Recall": 0.016666666666666666,
+            "Total": 60
+        },
+        "EXTREME_LOS": {
+            "TP": 4,
+            "FN": 56,
+            "Recall": 0.06666666666666667,
+            "Total": 60
+        },
+        "IMPOSSIBLE_CHRONOLOGY": {
+            "TP": 4,
+            "FN": 56,
+            "Recall": 0.06666666666666667,
+            "Total": 60
+        }
+    }
+}

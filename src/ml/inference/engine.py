@@ -76,16 +76,22 @@ class MLDetectionEngine:
                 expected = float(row.get('expected_value', 0.0))
                 
                 event = AnomalyEvent(
-                    timestamp=datetime.now(),
-                    pipeline_run_id="ML-INFERENCE-RUN",
-                    batch_id=str(row.get('batch_id', 'UNKNOWN')),
+                    run_id="ML-INFERENCE-RUN",
                     hospital_id=str(row.get('hospital_id', 'UNKNOWN')),
-                    layer=domain,
+                    batch_id=str(row.get('batch_id', 'UNKNOWN')),
+                    stage="ML_INFERENCE",
                     feature_name=feature_name,
-                    feature_value=feature_value,
+                    detector=domain,
+                    model_name=model.__class__.__name__,
+                    model_version="1.0",
+                    anomaly_type=domain,
+                    observed_value=feature_value,
                     expected_value=expected,
+                    baseline_value=expected,
+                    anomaly_score=float(row.get('anomaly_score', 0.0)),
+                    confidence_score=1.0,
                     severity="HIGH",
-                    description=f"{domain} anomaly detected by {model.__class__.__name__}. Score: {row.get('anomaly_score', 0.0):.4f}"
+                    evidence={"description": f"{domain} anomaly detected by {model.__class__.__name__}. Score: {row.get('anomaly_score', 0.0):.4f}"}
                 )
                 events.append(event)
                 

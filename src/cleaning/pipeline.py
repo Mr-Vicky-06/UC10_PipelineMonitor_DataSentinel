@@ -3,14 +3,19 @@ Pipeline integration and execution orchestrator for the Data Cleaning Module.
 Integrates Schema Validation gating before invoking DataCleaner.
 """
 
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Union
-import uuid
 
 import pandas as pd
 
-from src.pipeline.telemetry import PipelineStage, PipelineTelemetryLogger, TelemetryEvent, TelemetryStatus
+from src.pipeline.telemetry import (
+    PipelineStage,
+    PipelineTelemetryLogger,
+    TelemetryEvent,
+    TelemetryStatus,
+)
 from src.validation import validate_dataset
 
 from .cleaner import DataCleaner
@@ -36,13 +41,20 @@ def clean_dataset(
     3. If schema validation passes, executes DataCleaner.
     4. Writes cleaned data and JSON audit report to pipeline_output/ if paths are configured.
     """
-    active_run_id = run_id or f"clean_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+    active_run_id = (
+        run_id
+        or f"clean_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+    )
     start_time_iso = datetime.now().isoformat()
 
     # Determine file path string if applicable
-    input_file_str = str(input_path_or_df) if isinstance(input_path_or_df, (str, Path)) else "In-Memory DataFrame"
+    input_file_str = (
+        str(input_path_or_df)
+        if isinstance(input_path_or_df, (str, Path))
+        else "In-Memory DataFrame"
+    )
     telemetry = PipelineTelemetryLogger.get_instance()
-    
+
     val_corr_id = str(uuid.uuid4())
     clean_corr_id = str(uuid.uuid4())
     # Extract hospital_id from path if possible, else "unknown"
@@ -58,12 +70,19 @@ def clean_dataset(
     if run_schema_validation:
         val_start = datetime.now()
         val_start_event = TelemetryEvent(
-            correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-            stage=PipelineStage.VALIDATION, status=TelemetryStatus.STARTED, source_file=input_file_str
+            correlation_id=val_corr_id,
+            run_id=active_run_id,
+            hospital_id=hospital_id,
+            batch_id=batch_id,
+            stage=PipelineStage.VALIDATION,
+            status=TelemetryStatus.STARTED,
+            source_file=input_file_str,
         )
         telemetry.log_event(val_start_event)
-        
-        val_result = validate_dataset(dataset, input_path_or_df, schemas_dir=schemas_dir)
+
+        val_result = validate_dataset(
+            dataset, input_path_or_df, schemas_dir=schemas_dir
+        )
         if not val_result.passed:
             # Schema Validation failed -> Halt cleaning and quarantine
             metrics = CleaningMetrics(
@@ -80,26 +99,44 @@ def clean_dataset(
                 end_time=datetime.now().isoformat(),
                 metrics=metrics,
                 status=CleaningStatus.FAILED,
-                warnings=[f"Schema validation failed with {val_result.error_count} error(s). Cleaning halted."],
+                warnings=[
+                    f"Schema validation failed with {val_result.error_count} error(s). Cleaning halted."
+                ],
                 schema_validation_passed=False,
             )
-            
+
             val_end_event = TelemetryEvent(
-                correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-                stage=PipelineStage.VALIDATION, status=TelemetryStatus.FAILED, source_file=input_file_str,
+                correlation_id=val_corr_id,
+                run_id=active_run_id,
+                hospital_id=hospital_id,
+                batch_id=batch_id,
+                stage=PipelineStage.VALIDATION,
+                status=TelemetryStatus.FAILED,
+                source_file=input_file_str,
                 duration_ms=int((datetime.now() - val_start).total_seconds() * 1000),
-                records_in=val_result.total_rows, errors=val_result.error_count,
-                error_type="ValidationError", error_message="Schema validation failed"
+                records_in=val_result.total_rows,
+                errors=val_result.error_count,
+                error_type="ValidationError",
+                error_message="Schema validation failed",
             )
             telemetry.log_event(val_end_event)
-            
-            return CleaningResult(cleaned_df=pd.DataFrame(), report=report, passed=False)
+
+            return CleaningResult(
+                cleaned_df=pd.DataFrame(), report=report, passed=False
+            )
         else:
             val_end_event = TelemetryEvent(
-                correlation_id=val_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-                stage=PipelineStage.VALIDATION, status=TelemetryStatus.COMPLETED, source_file=input_file_str,
+                correlation_id=val_corr_id,
+                run_id=active_run_id,
+                hospital_id=hospital_id,
+                batch_id=batch_id,
+                stage=PipelineStage.VALIDATION,
+                status=TelemetryStatus.COMPLETED,
+                source_file=input_file_str,
                 duration_ms=int((datetime.now() - val_start).total_seconds() * 1000),
-                records_in=val_result.total_rows, records_out=val_result.total_rows, errors=val_result.error_count
+                records_in=val_result.total_rows,
+                records_out=val_result.total_rows,
+                errors=val_result.error_count,
             )
             telemetry.log_event(val_end_event)
 
@@ -120,32 +157,56 @@ def clean_dataset(
     # 3. Load Cleaning Config & Execute Cleaner
     config = load_cleaning_config_by_name(dataset, config_dir=cleaning_configs_dir)
     cleaner = DataCleaner(config)
-    
+
     clean_start_time = datetime.now()
     clean_start_event = TelemetryEvent(
-        correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-        stage=PipelineStage.CLEANING, status=TelemetryStatus.STARTED, source_file=input_file_str
+        correlation_id=clean_corr_id,
+        run_id=active_run_id,
+        hospital_id=hospital_id,
+        batch_id=batch_id,
+        stage=PipelineStage.CLEANING,
+        status=TelemetryStatus.STARTED,
+        source_file=input_file_str,
     )
     telemetry.log_event(clean_start_event)
-    
+
     try:
-        result = cleaner.clean(raw_df, run_id=active_run_id, input_file=input_file_str, output_file=str(output_path) if output_path else None)
-        
+        result = cleaner.clean(
+            raw_df,
+            run_id=active_run_id,
+            input_file=input_file_str,
+            output_file=str(output_path) if output_path else None,
+        )
+
         clean_end_event = TelemetryEvent(
-            correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-            stage=PipelineStage.CLEANING, status=TelemetryStatus.COMPLETED, source_file=input_file_str,
+            correlation_id=clean_corr_id,
+            run_id=active_run_id,
+            hospital_id=hospital_id,
+            batch_id=batch_id,
+            stage=PipelineStage.CLEANING,
+            status=TelemetryStatus.COMPLETED,
+            source_file=input_file_str,
             duration_ms=int((datetime.now() - clean_start_time).total_seconds() * 1000),
-            records_in=result.report.metrics.input_rows, records_out=result.report.metrics.output_rows,
-            records_rejected=result.report.metrics.unresolved_records, records_corrected=result.report.metrics.rows_changed,
-            errors=0, warnings=0
+            records_in=result.report.metrics.input_rows,
+            records_out=result.report.metrics.output_rows,
+            records_rejected=result.report.metrics.unresolved_records,
+            records_corrected=result.report.metrics.rows_changed,
+            errors=0,
+            warnings=0,
         )
         telemetry.log_event(clean_end_event)
     except Exception as e:
         clean_err_event = TelemetryEvent(
-            correlation_id=clean_corr_id, run_id=active_run_id, hospital_id=hospital_id, batch_id=batch_id,
-            stage=PipelineStage.CLEANING, status=TelemetryStatus.FAILED, source_file=input_file_str,
+            correlation_id=clean_corr_id,
+            run_id=active_run_id,
+            hospital_id=hospital_id,
+            batch_id=batch_id,
+            stage=PipelineStage.CLEANING,
+            status=TelemetryStatus.FAILED,
+            source_file=input_file_str,
             duration_ms=int((datetime.now() - clean_start_time).total_seconds() * 1000),
-            error_type=type(e).__name__, error_message=str(e)
+            error_type=type(e).__name__,
+            error_message=str(e),
         )
         telemetry.log_event(clean_err_event)
         raise

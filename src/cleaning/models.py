@@ -2,9 +2,9 @@
 Data models and report schemas for the Data Cleaning Module.
 """
 
+import json
 from dataclasses import dataclass, field
 from enum import Enum
-import json
 from typing import Any, Dict, List, Optional
 
 

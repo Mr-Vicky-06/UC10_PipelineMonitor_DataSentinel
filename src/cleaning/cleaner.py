@@ -4,14 +4,20 @@ Performs deterministic, non-destructive standardization, null normalization,
 field-specific casing, date and numeric formatting, and grain-aware deduplication.
 """
 
-from datetime import datetime
 import re
 import time
+from datetime import datetime
 from typing import Any, List, Optional, Set
 
 import pandas as pd
 
-from .models import CleaningConfig, CleaningMetrics, CleaningReport, CleaningResult, CleaningStatus
+from .models import (
+    CleaningConfig,
+    CleaningMetrics,
+    CleaningReport,
+    CleaningResult,
+    CleaningStatus,
+)
 
 
 class DataCleaner:
@@ -68,7 +74,9 @@ class DataCleaner:
         unresolved_row_indices: Set[Any] = set()
 
         # 1. Whitespace & Null Normalization across all columns
-        null_set = {str(val).strip().upper() for val in self.config.null_representations}
+        null_set = {
+            str(val).strip().upper() for val in self.config.null_representations
+        }
         mandatory_set = set(self.config.mandatory_fields)
 
         for col in cleaned_df.columns:
@@ -83,7 +91,9 @@ class DataCleaner:
                 changed_row_indices.update(series[ws_mask].index)
 
             # Check for textual null representations
-            null_mask = stripped.str.upper().isin(null_set) | (stripped == "") | series.isna()
+            null_mask = (
+                stripped.str.upper().isin(null_set) | (stripped == "") | series.isna()
+            )
             null_count = int(null_mask.sum())
             if null_count > 0:
                 metrics.null_cells_normalized += null_count
@@ -115,7 +125,11 @@ class DataCleaner:
                 continue
 
             canonical_fmt = self.config.canonical_date_format
-            accepted_fmts = self.config.accepted_date_formats or ["%d-%b-%Y", "%Y-%m-%d", "%Y%m%d"]
+            accepted_fmts = self.config.accepted_date_formats or [
+                "%d-%b-%Y",
+                "%Y-%m-%d",
+                "%Y%m%d",
+            ]
 
             normalized_dates = []
             dates_changed_count = 0
@@ -182,7 +196,9 @@ class DataCleaner:
                 if "," in val_str:
                     clean_cand = val_str.replace(",", "")
                     # Verify it represents a valid numeric value before stripping comma
-                    if re.match(r"^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$", clean_cand):
+                    if re.match(
+                        r"^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$", clean_cand
+                    ):
                         val_str = clean_cand
                         nums_changed_count += 1
                         changed_row_indices.add(idx)
@@ -260,7 +276,9 @@ class DataCleaner:
 
             if conflict_count > 0:
                 # Count unique conflicting key groups
-                unique_conflict_keys = len(cleaned_df[conflicting_pk_mask].groupby(pk_cols))
+                unique_conflict_keys = len(
+                    cleaned_df[conflicting_pk_mask].groupby(pk_cols)
+                )
                 metrics.conflicting_key_groups_found = unique_conflict_keys
                 unresolved_row_indices.update(cleaned_df[conflicting_pk_mask].index)
                 warn_msg = (

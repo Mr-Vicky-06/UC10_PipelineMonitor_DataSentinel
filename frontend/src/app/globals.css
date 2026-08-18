@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Colors */
+  --color-canvas: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f1f5f9;
+  --color-muted: #f1f5f9;
+
+  /* Text */
+  --color-primary: #0f172a;
+  --color-secondary: #475569;
+  --color-tertiary: #94a3b8;
+  --color-inverse: #ffffff;
+
+  /* Status */
+  --color-status-critical: #dc2626;
+  --color-status-error: #ea580c;
+  --color-status-warning: #ca8a04;
+  --color-status-success: #16a34a;
+  --color-status-info: #2563eb;
+  --color-status-unknown: #64748b;
+
+  /* Interactive */
+  --color-interactive: #2563eb;
+  --color-interactive-hover: #1d4ed8;
+  --color-border-default: #e2e8f0;
+  --color-border-focus: #2563eb;
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+}
+
+@layer base {
+  :root {
+    --background: var(--color-canvas);
+    --foreground: var(--color-primary);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}

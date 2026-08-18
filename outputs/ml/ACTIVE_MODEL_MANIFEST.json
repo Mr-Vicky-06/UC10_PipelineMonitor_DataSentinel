@@ -1,0 +1,26 @@
+[
+  {
+    "domain": "VOLUME",
+    "model_name": "CUSUM",
+    "version": "20260818123458",
+    "path": "outputs/ml/models/v3/volume_cusum_v2_20260818123458.joblib",
+    "features": [
+      "claim_volume"
+    ],
+    "status": "PROMOTED_FOR_INFERENCE",
+    "trained_on": "947 Real Telemetry Records"
+  },
+  {
+    "domain": "OPERATIONAL",
+    "model_name": "LOF_V3",
+    "version": "20260818123458",
+    "path": "outputs/ml/models/v3/operational_lof_v3_20260818123458.joblib",
+    "features": [
+      "normalized_volume_zscore",
+      "throughput",
+      "failure_rate"
+    ],
+    "status": "PROMOTED_FOR_INFERENCE",
+    "trained_on": "947 Real Telemetry Records"
+  }
+]

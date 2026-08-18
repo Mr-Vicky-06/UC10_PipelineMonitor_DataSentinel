@@ -1,8 +1,10 @@
 from typing import Dict, Any, List
 import logging
-from rag.retrieval.duckdb_client import ReadOnlyDuckDBClient
-from rag.evidence.adapters import adapt_pipeline_event, adapt_rule_result, adapt_anomaly_event
-from rag.models.evidence import Evidence
+from src.rag.retrieval.duckdb_client import ReadOnlyDuckDBClient
+from src.rag.evidence.adapters import adapt_pipeline_event, adapt_rule_result, adapt_anomaly_event, adapt_sla_observation
+from src.rag.models.evidence import Evidence
+from src.sla.config import SLAConfigManager
+from src.sla.calculator import SLACalculator
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +15,7 @@ class QueryCatalog:
     """
     def __init__(self, db_client: ReadOnlyDuckDBClient):
         self.db = db_client
+        self.sla_manager = SLAConfigManager()
 
     def execute_intent(self, intent: str, params: Dict[str, Any]) -> List[Evidence]:
         """
@@ -117,6 +120,61 @@ class QueryCatalog:
         evidence.extend(self._get_run_summary({"run_id": run_id}))
         evidence.extend(self._get_rule_violations({"run_id": run_id}))
         evidence.extend(self._get_anomaly_summary({"run_id": run_id}))
+        
+        # --- Compute SLA Evidence Dynamically ---
+        # 1. Identify stages from the run summary
+        stages_seen = set([e.stage for e in evidence if e.source == 'pipeline_events'])
+        for stage in stages_seen:
+            # check if SLA is configured
+            config = self.sla_manager.get_sla(pipeline_name="uc10_pipeline", stage=stage)
+            if not config:
+                continue
+                
+            # Extract events for this stage to find start/end and records
+            stage_events = [e for e in evidence if e.source == 'pipeline_events' and e.stage == stage]
+            if not stage_events:
+                continue
+                
+            # Find start time
+            start_event = next((e for e in stage_events if e.identifier == 'STAGE_START'), None)
+            if not start_event:
+                continue
+                
+            start_time = start_event.timestamp.timestamp()
+            
+            # Find current state/metrics
+            current_time = start_time
+            expected_records = None
+            processed_records = 0
+            stage_status = "RUNNING"
+            
+            for e in sorted(stage_events, key=lambda x: x.timestamp):
+                current_time = e.timestamp.timestamp()
+                if e.identifier == 'STAGE_END' or e.identifier == 'COMPLETED':
+                    stage_status = "COMPLETED"
+                if e.identifier == 'STAGE_FAILED' or e.identifier == 'pipeline_failure':
+                    stage_status = "FAILED"
+                    
+                if e.source_reference:
+                    metrics = e.source_reference.get('metrics', {})
+                    if 'records_in' in metrics:
+                        expected_records = metrics['records_in']
+                    if 'records_out' in metrics:
+                        processed_records = metrics['records_out']
+            
+            obs = SLACalculator.calculate(
+                config=config,
+                run_id=run_id,
+                start_time=start_time,
+                current_time=current_time,
+                expected_records=expected_records,
+                processed_records=processed_records,
+                stage_status=stage_status,
+                batch_id=stage_events[0].batch_id,
+                hospital_id=stage_events[0].hospital_id
+            )
+            
+            evidence.append(adapt_sla_observation(obs))
         
         # Sort all evidence chronologically
         evidence.sort(key=lambda x: x.timestamp)

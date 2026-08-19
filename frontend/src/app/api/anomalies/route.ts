@@ -18,7 +18,7 @@ export async function GET() {
       
       const query = `
         SELECT * FROM read_parquet('${parquetPath}')
-        ORDER BY detected_at DESC
+        ORDER BY window_date DESC
         LIMIT 100;
       `;
       
@@ -28,7 +28,33 @@ export async function GET() {
           console.warn("Failed to read anomaly parquet:", err.message);
           resolve(NextResponse.json([]));
         } else {
-          resolve(NextResponse.json(res));
+          // Map backend parquet schema to frontend AnomalyEvent interface
+          const mapped = res.map((row: any) => {
+            let domain = "OPERATIONAL";
+            if (row.anomaly_type === "VOLUME_ANOMALY") domain = "VOLUME";
+            
+            let model = "MULTIVARIATE";
+            if (row.isolation_forest_flag) model = "Isolation Forest";
+            if (row.statistical_flag) model = "Statistical / CUSUM";
+
+            return {
+              anomaly_id: row.anomaly_id,
+              domain: domain,
+              model: model,
+              feature: row.dataset || "Unknown",
+              observed: row.affected_records || 0,
+              expected: 0,
+              anomaly_score: row.evidence_score || 0,
+              severity: row.severity || "UNKNOWN",
+              hospital_id: "UNKNOWN", // Parquet doesn't contain hospital_id natively in this old schema
+              batch_id: "UNKNOWN",
+              run_id: "UNKNOWN",
+              detected_at: row.window_date,
+              evidence: row.explanation || "No explanation provided"
+            };
+          });
+
+          resolve(NextResponse.json(mapped));
         }
       });
     });

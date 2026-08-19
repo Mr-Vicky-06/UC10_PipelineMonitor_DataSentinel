@@ -12,10 +12,10 @@ interface SLABadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function SLABadge({ status, eta, deadline, className, ...props }: SLABadgeProps) {
   const config = {
-    ON_TRACK: { variant: "success" as const, label: "On Track" },
+    ON_TRACK: { variant: "healthy" as const, label: "On Track" },
     AT_RISK: { variant: "warning" as const, label: "At Risk" },
     BREACHED: { variant: "critical" as const, label: "Breached" },
-    UNKNOWN: { variant: "secondary" as const, label: "Unknown" },
+    UNKNOWN: { variant: "unknown" as const, label: "Unknown" },
   }
 
   const { variant, label } = config[status] || config.UNKNOWN

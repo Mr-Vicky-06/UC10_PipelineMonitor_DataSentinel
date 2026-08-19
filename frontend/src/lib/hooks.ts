@@ -11,6 +11,7 @@ export function usePipelines() {
       }
       return response.json();
     },
+    refetchInterval: 5000,
   });
 }
 
@@ -24,6 +25,7 @@ export function useAlerts() {
       }
       return response.json();
     },
+    refetchInterval: 5000,
   });
 }
 
@@ -37,7 +39,7 @@ export function useDataQuality() {
       }
       return response.json();
     },
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
 }
 
@@ -51,6 +53,6 @@ export function useAnomalies() {
       }
       return response.json();
     },
-    refetchInterval: 30000,
+    refetchInterval: 5000,
   });
 }

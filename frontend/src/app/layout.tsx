@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const ibmPlexSans = IBM_Plex_Sans({
-  variable: "--font-ibm-plex-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-ibm-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-});
+// Geist fonts are pre-configured via the imported modules
+// We use their built-in variable properties directly
 
 export const metadata: Metadata = {
   title: "DataSentinel | Operations Center",
@@ -28,10 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${ibmPlexSans.variable} ${ibmPlexMono.variable} h-full antialiased`}
-    >
+      <html
+        lang="en"
+        className={`${GeistSans.variable} ${GeistMono.variable} h-full antialiased`}
+      >
       <body className="min-h-full flex h-full bg-canvas text-primary overflow-hidden">
         <Providers>
           <Sidebar />

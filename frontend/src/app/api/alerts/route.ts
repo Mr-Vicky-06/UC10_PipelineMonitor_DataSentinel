@@ -1,44 +1,77 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
+import { AlertEvent, SLAStatus } from '@/lib/types';
+// @ts-ignore
+import Database from 'better-sqlite3';
 import path from 'path';
-import readline from 'readline';
 
 export async function GET() {
   try {
-    const alertsPath = path.resolve(process.cwd(), '../outputs/action/alerts.jsonl');
-    
-    if (!fs.existsSync(alertsPath)) {
-      return NextResponse.json([]);
-    }
-
-    const alerts = [];
-    const fileStream = fs.createReadStream(alertsPath);
-    const rl = readline.createInterface({
-      input: fileStream,
-      crlfDelay: Infinity
+    // Fetch from the real Alert Engine
+    const response = await fetch('http://localhost:8000/api/v1/alerts', {
+      cache: 'no-store', // ensures we get fresh alerts
     });
 
-    for await (const line of rl) {
-      if (line.trim()) {
+    if (!response.ok) {
+      console.error('Failed to fetch from Alert Engine:', response.status, response.statusText);
+      return NextResponse.json(
+        { error: 'Alert service unavailable' },
+        { status: 503 }
+      );
+    }
+
+    const backendAlerts = await response.json();
+
+    // Map AlertResponse to AlertEvent frontend schema
+    const alerts: AlertEvent[] = backendAlerts.map((alert: any) => {
+      let slaStatus: SLAStatus = 'UNKNOWN';
+      let eta: string | undefined;
+      let deadline: string | undefined;
+
+      // Direct SQLite query to extract details_json for SLA events, bypassing frozen FastAPI layer
+      if (alert.event_type === 'SLA') {
+        slaStatus = alert.severity === 'CRITICAL' ? 'BREACHED' : 'AT_RISK';
         try {
-          const parsed = JSON.parse(line);
-          if (parsed.created_at) {
-            // Convert seconds to ISO string
-            parsed.detected_at = new Date(parsed.created_at * 1000).toISOString();
+          const dbPath = path.resolve(process.cwd(), '../alert-engine/alertdb.sqlite3');
+          const db = new Database(dbPath, { readonly: true });
+          const row = db.prepare('SELECT details_json FROM alert_details WHERE alert_id = ?').get(alert.alert_id) as any;
+          if (row && row.details_json) {
+            const parsed = JSON.parse(row.details_json);
+            eta = parsed.estimated_completion;
+            deadline = parsed.deadline;
           }
-          alerts.push(parsed);
+          db.close();
         } catch (e) {
-          // ignore malformed lines
+          console.warn(`Failed to read SLA details directly from SQLite for ${alert.alert_id}`, e);
         }
       }
-    }
-    
-    // Sort by most recent first
+
+      return {
+        incident_id: alert.alert_id,
+        alert_id: alert.alert_id,
+        severity: alert.severity,
+        status: alert.status,
+        summary: alert.summary,
+        alert_type: alert.event_type,
+        hospital_id: alert.hospital || 'UNKNOWN',
+        batch_id: 'UNKNOWN',
+        run_id: alert.pipeline || 'UNKNOWN',
+        stage: 'UNKNOWN',
+        sla_status: slaStatus,
+        detected_at: alert.created_at,
+        eta: eta,
+        deadline: deadline
+      };
+    });
+
+    // Sort most recent first
     alerts.sort((a, b) => new Date(b.detected_at).getTime() - new Date(a.detected_at).getTime());
 
-    return NextResponse.json(alerts.slice(0, 50));
+    return NextResponse.json(alerts);
   } catch (error) {
-    console.error("API Error fetching alerts:", error);
-    return NextResponse.json({ error: 'Failed to fetch alerts data' }, { status: 500 });
+    console.error('API Error fetching alerts:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch alerts' },
+      { status: 500 }
+    );
   }
 }

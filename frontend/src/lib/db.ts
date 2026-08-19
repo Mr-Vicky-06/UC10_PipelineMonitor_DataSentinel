@@ -14,24 +14,19 @@ const dbPaths = {
   metrics: path.resolve(process.cwd(), '../outputs/ml/metrics_repository.duckdb'),
 };
 
-const dbs: Record<string, duckdb.Database> = {};
-
-function getDb(name: keyof typeof dbPaths): duckdb.Database {
-  if (!dbs[name]) {
-    dbs[name] = new duckdb.Database(dbPaths[name], {
-      'access_mode': 'READ_ONLY',
-    });
-  }
-  return dbs[name];
-}
-
 export function queryDb<T>(dbName: keyof typeof dbPaths, query: string, params: any[] = []): Promise<T[]> {
   return new Promise((resolve, reject) => {
-    const db = getDb(dbName);
+    // Instantiate a new db connection each time to avoid locking the file from Python writers
+    const db = new duckdb.Database(dbPaths[dbName], {
+      'access_mode': 'READ_ONLY',
+    });
     const connection = db.connect();
     
     connection.all(query, ...params, (err: any, res: any) => {
+      // Close both connection and db to release the Windows file handle
       connection.close();
+      db.close();
+      
       if (err) {
         reject(err);
       } else {

@@ -12,8 +12,12 @@ export async function GET() {
           MIN(timestamp) as started_at,
           MAX(hospital_id) as hospital_id,
           MAX(batch_id) as batch_id,
-          MAX(stage) as current_stage,
-          MAX(status) as status,
+          arg_max(stage, timestamp) as current_stage,
+          CASE arg_max(status, timestamp)
+            WHEN 'COMPLETED' THEN 'HEALTHY'
+            WHEN 'STARTED' THEN 'RUNNING'
+            ELSE arg_max(status, timestamp)
+          END as status,
           SUM(duration_ms) / 1000.0 as duration_sec,
           MAX(records_in) as records_in,
           MAX(records_out) as records_out,

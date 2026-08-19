@@ -1,0 +1,26 @@
+{
+  "run_id": "RUN_LIVE_BATCH_007",
+  "timestamp": "2026-08-18T17:08:21.716114",
+  "source_root": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\live_demo\\source",
+  "landing_root": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing",
+  "total_source_files": 1,
+  "total_landed_files": 1,
+  "total_bytes": 1216999,
+  "hospitals": [
+    "HOSP-TEST"
+  ],
+  "files": [
+    {
+      "hospital_id": "HOSP-TEST",
+      "filename": "batch_20260107.csv",
+      "service_date": "2026-01-07",
+      "source_path": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\live_demo\\source\\RUN_LIVE_BATCH_007\\HOSP-TEST\\batch_20260107.csv",
+      "landing_path": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_007\\HOSP-TEST\\batch_20260107.csv",
+      "size_bytes": 1216999,
+      "source_sha256": "bac19d5477f90ce0503167a1a2ead2d9c9a0e607e4ebd3daad80a56e8c6dd38f",
+      "landing_sha256": "bac19d5477f90ce0503167a1a2ead2d9c9a0e607e4ebd3daad80a56e8c6dd38f",
+      "status": "LANDED",
+      "landed_at": "2026-08-18T17:08:21.608384"
+    }
+  ]
+}

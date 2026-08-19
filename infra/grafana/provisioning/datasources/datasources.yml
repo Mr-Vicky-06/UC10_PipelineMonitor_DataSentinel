@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: SQLite-Analytics
+    type: frser-sqlite-datasource
+    uid: DS_SQLITE_ANALYTICS
+    access: proxy
+    url: /tmp/analytics.sqlite3
+    isDefault: true
+    editable: false

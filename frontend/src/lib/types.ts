@@ -68,6 +68,8 @@ export interface AlertEvent {
   sla_status: SLAStatus;
   detected_at: string;
   age_minutes: number;
+  eta?: string;
+  deadline?: string;
 }
 
 export interface RCAFinding {
@@ -93,4 +95,46 @@ export interface SLAObservation {
   eta: string;
   deadline: string;
   margin_minutes: number;
+}
+
+export type RagProviderStatus = "READY" | "NOT_CONFIGURED" | "UNAVAILABLE" | "HISTORICAL_ONLY";
+
+export interface RagEvidence {
+  type: string;
+  source: string;
+  value: string;
+  timestamp?: string;
+  context?: string;
+}
+
+export interface RagResponse {
+  grounded_explanation: string;
+  recommended_action: string;
+  sources: string;
+  retrieval_method: string;
+  response_type: string;
+}
+
+export interface RagAnalysis {
+  anomaly_id: string;
+  user_query: string;
+  grounded_explanation: string;
+  recommended_action: string;
+  sources: string;
+  retrieval_method: string;
+  response_type: string;
+  
+  // Context from anomaly metadata
+  window_date?: string;
+  dataset?: string;
+  anomaly_type?: string;
+  severity?: string;
+}
+
+export interface RagAnalysisSummary {
+  anomaly_id: string;
+  dataset: string;
+  anomaly_type: string;
+  severity: string;
+  window_date: string;
 }

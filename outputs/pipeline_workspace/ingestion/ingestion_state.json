@@ -5698,5 +5698,155 @@
     "ingestion_timestamp": "2026-08-18 12:49:51.543701",
     "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\E2E_NORMAL_001\\hospital_E\\batch_20230228.csv",
     "records_in": 168
+  },
+  "HOSP-TEST::batch_20260101.csv": {
+    "ingestion_timestamp": "2026-08-18 22:37:53.810797",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_001\\HOSP-TEST\\batch_20260101.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260102.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:06.139307",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_002\\HOSP-TEST\\batch_20260102.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260103.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:09.256407",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_003\\HOSP-TEST\\batch_20260103.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260104.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:12.376981",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_004\\HOSP-TEST\\batch_20260104.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260105.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:15.539135",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_005\\HOSP-TEST\\batch_20260105.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260106.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:18.587537",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_006\\HOSP-TEST\\batch_20260106.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260107.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:21.842443",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_007\\HOSP-TEST\\batch_20260107.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260108.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:25.686579",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_008\\HOSP-TEST\\batch_20260108.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260109.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:40.810283",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_009\\HOSP-TEST\\batch_20260109.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260110.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:55.788180",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_010\\HOSP-TEST\\batch_20260110.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260111.csv": {
+    "ingestion_timestamp": "2026-08-18 22:38:58.936158",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_011\\HOSP-TEST\\batch_20260111.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260112.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:02.005874",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_012\\HOSP-TEST\\batch_20260112.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260113.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:05.014326",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_013\\HOSP-TEST\\batch_20260113.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260114.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:08.149674",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_014\\HOSP-TEST\\batch_20260114.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260115.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:18.394423",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_015\\HOSP-TEST\\batch_20260115.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260116.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:21.442054",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_016\\HOSP-TEST\\batch_20260116.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260117.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:31.205316",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_017\\HOSP-TEST\\batch_20260117.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260118.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:34.259688",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_018\\HOSP-TEST\\batch_20260118.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260119.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:37.279884",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_019\\HOSP-TEST\\batch_20260119.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260120.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:40.317903",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_020\\HOSP-TEST\\batch_20260120.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260121.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:43.398091",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_021\\HOSP-TEST\\batch_20260121.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260122.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:46.500152",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_022\\HOSP-TEST\\batch_20260122.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260123.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:49.644310",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_023\\HOSP-TEST\\batch_20260123.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260124.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:52.665976",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_024\\HOSP-TEST\\batch_20260124.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260125.csv": {
+    "ingestion_timestamp": "2026-08-18 22:39:55.766681",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_025\\HOSP-TEST\\batch_20260125.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260126.csv": {
+    "ingestion_timestamp": "2026-08-18 22:40:07.800528",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_026\\HOSP-TEST\\batch_20260126.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260127.csv": {
+    "ingestion_timestamp": "2026-08-18 22:40:22.967680",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_027\\HOSP-TEST\\batch_20260127.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260128.csv": {
+    "ingestion_timestamp": "2026-08-18 22:40:26.291894",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_028\\HOSP-TEST\\batch_20260128.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260129.csv": {
+    "ingestion_timestamp": "2026-08-18 22:40:29.936118",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_029\\HOSP-TEST\\batch_20260129.csv",
+    "records_in": 2000
+  },
+  "HOSP-TEST::batch_20260130.csv": {
+    "ingestion_timestamp": "2026-08-18 22:40:33.416213",
+    "source_file": "D:\\UC10_Data_Quality_Pipeline\\outputs\\pipeline_workspace\\landing\\RUN_LIVE_BATCH_030\\HOSP-TEST\\batch_20260130.csv",
+    "records_in": 66
   }
 }

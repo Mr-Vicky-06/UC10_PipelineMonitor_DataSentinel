@@ -12,10 +12,10 @@ interface StatusBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 export function StatusBadge({ severity, label, className, ...props }: StatusBadgeProps) {
   const config = {
     CRITICAL: { variant: "critical" as const, icon: AlertCircle, defaultLabel: "Critical" },
-    ERROR: { variant: "error" as const, icon: AlertTriangle, defaultLabel: "Error" },
+    ERROR: { variant: "critical" as const, icon: AlertTriangle, defaultLabel: "Error" },
     WARNING: { variant: "warning" as const, icon: AlertTriangle, defaultLabel: "Warning" },
-    INFO: { variant: "info" as const, icon: Info, defaultLabel: "Info" },
-    UNKNOWN: { variant: "secondary" as const, icon: HelpCircle, defaultLabel: "Unknown" },
+    INFO: { variant: "running" as const, icon: Info, defaultLabel: "Info" },
+    UNKNOWN: { variant: "unknown" as const, icon: HelpCircle, defaultLabel: "Unknown" },
   }
 
   const { variant, icon: Icon, defaultLabel } = config[severity] || config.UNKNOWN

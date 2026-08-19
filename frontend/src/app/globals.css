@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Colors */
   --color-canvas: #f8fafc;
@@ -17,12 +17,21 @@
   --color-inverse: #ffffff;
 
   /* Status */
-  --color-status-critical: #dc2626;
-  --color-status-error: #ea580c;
-  --color-status-warning: #ca8a04;
-  --color-status-success: #16a34a;
-  --color-status-info: #2563eb;
-  --color-status-unknown: #64748b;
+  --color-status-healthy: #10b981;
+  --color-status-running: #3b82f6;
+  --color-status-warning: #f59e0b;
+  --color-status-critical: #e11d48;
+  --color-status-stale: #94a3b8;
+  --color-status-unknown: #94a3b8;
+
+  /* Topology Node States */
+  --color-node-healthy: var(--color-status-healthy);
+  --color-node-running: var(--color-status-running);
+  --color-node-warning: var(--color-status-warning);
+  --color-node-critical: var(--color-status-critical);
+  --color-node-stale: var(--color-status-stale);
+  --color-node-bg-default: var(--color-surface);
+  --color-node-border: var(--color-border-default);
 
   /* Interactive */
   --color-interactive: #2563eb;

@@ -9,7 +9,8 @@ import {
   LineChart, 
   AlertTriangle,
   BarChart3,
-  Settings
+  Settings,
+  BrainCircuit
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -20,6 +21,7 @@ const navigation = [
   { name: "Data Quality", href: "/data-quality", icon: ShieldCheck },
   { name: "Anomalies", href: "/anomalies", icon: LineChart },
   { name: "Incidents", href: "/incidents", icon: AlertTriangle },
+  { name: "RAG Intelligence", href: "/rag", icon: BrainCircuit },
 ]
 
 const secondaryNavigation = [

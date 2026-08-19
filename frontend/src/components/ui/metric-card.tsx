@@ -9,6 +9,7 @@ interface MetricCardProps extends React.HTMLAttributes<HTMLDivElement> {
   delta?: string | number
   trend?: "up" | "down" | "neutral"
   trendLabel?: string
+  trendValue?: string
   icon?: React.ReactNode
 }
 
@@ -18,10 +19,13 @@ export function MetricCard({
   delta,
   trend,
   trendLabel,
+  trendValue,
   icon,
   className,
   ...props
 }: MetricCardProps) {
+  const displayLabel = trendLabel || trendValue
+  
   return (
     <Card className={cn("overflow-hidden", className)} {...props}>
       <CardContent className="p-4 sm:p-6 flex flex-col justify-between h-full">
@@ -49,8 +53,8 @@ export function MetricCard({
                 {delta}
               </span>
               
-              {trendLabel && (
-                <span className="ml-1 text-tertiary">{trendLabel}</span>
+              {displayLabel && (
+                <span className="ml-1 text-tertiary">{displayLabel}</span>
               )}
             </div>
           )}

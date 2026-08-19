@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2",
+  "inline-flex items-center rounded-sm border px-2 py-0.5 text-xs font-medium tabular-nums transition-colors focus:outline-none focus:ring-2 focus:ring-border-focus focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -12,12 +12,13 @@ const badgeVariants = cva(
           "border-transparent bg-interactive text-inverse",
         secondary:
           "border-transparent bg-muted text-primary",
-        outline: "text-primary",
-        critical: "border-transparent bg-status-critical text-inverse",
-        error: "border-transparent bg-status-error text-inverse",
-        warning: "border-transparent bg-status-warning text-inverse",
-        success: "border-transparent bg-status-success text-inverse",
-        info: "border-transparent bg-status-info text-inverse",
+        outline: "text-primary border-border-default",
+        critical: "border-transparent bg-[var(--color-status-critical)] text-inverse",
+        warning: "border-transparent bg-[var(--color-status-warning)] text-inverse",
+        healthy: "border-transparent bg-[var(--color-status-healthy)] text-inverse",
+        running: "border-transparent bg-[var(--color-status-running)] text-inverse",
+        stale: "border-transparent bg-[var(--color-status-stale)] text-inverse",
+        unknown: "border-dashed border-[var(--color-status-unknown)] text-[var(--color-status-unknown)] bg-transparent",
       },
     },
     defaultVariants: {

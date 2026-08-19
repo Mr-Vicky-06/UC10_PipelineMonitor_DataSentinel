@@ -23,3 +23,6 @@ ENV/
 .vscode/
 .idea/
 .ipynb_checkpoints/
+
+outputs/
+*.sqlite3

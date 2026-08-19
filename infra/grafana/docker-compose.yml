@@ -1,0 +1,19 @@
+services:
+  grafana:
+    image: grafana/grafana:11.1.0 # Pinned version
+    container_name: datasentinel-grafana
+    ports:
+      - "3002:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=frser-sqlite-datasource
+    volumes:
+      - ./grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./provisioning:/etc/grafana/provisioning:ro
+      - ./dashboards:/etc/grafana/dashboards:ro
+      - ../../outputs/analytics.sqlite3:/tmp/analytics.sqlite3:ro
+      # Grafana internal database storage
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+
+volumes:
+  grafana-storage:

@@ -1,0 +1,181 @@
+{
+  "id": null,
+  "uid": "pipeline_performance_d0",
+  "title": "DATASENTINEL - PIPELINE PERFORMANCE",
+  "tags": [
+    "datasentinel",
+    "pipeline"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "type": "timeseries",
+      "title": "PIPELINE RUNS OVER TIME",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT start_time AS time, 1 AS value, 'Run' AS metric FROM pipeline_runs_analytics WHERE $__timeFilter(start_time) ORDER BY start_time ASC",
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars",
+            "lineWidth": 1,
+            "fillOpacity": 80
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "type": "piechart",
+      "title": "COMPLETED VS FAILED",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT status as metric, COUNT(run_id) as value FROM pipeline_runs_analytics GROUP BY status",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "type": "stat",
+      "title": "FAILURE RATE",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT (SUM(total_failures) * 1.0 / NULLIF(SUM(total_records), 0)) * 100 as value FROM pipeline_runs_analytics",
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 2,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "type": "barchart",
+      "title": "RUNS BY STAGE",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT stage as metric, run_count as value FROM pipeline_stage_metrics ORDER BY run_count DESC",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "xTickLabelRotation": -45
+      }
+    },
+    {
+      "id": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "type": "barchart",
+      "title": "STAGE DURATION (MS)",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT stage as metric, avg_duration_ms as value FROM pipeline_stage_metrics ORDER BY avg_duration_ms DESC",
+          "format": "table"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "type": "table",
+      "title": "RECENT PIPELINE EVENTS",
+      "datasource": {
+        "type": "frser-sqlite-datasource",
+        "uid": "DS_SQLITE_ANALYTICS"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "rawSql": "SELECT timestamp as Time, stage as Stage, status as Status, message as Message FROM pipeline_events_analytics ORDER BY timestamp DESC LIMIT 50",
+          "format": "table"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Colors */
+  --color-canvas: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f1f5f9;
+  --color-muted: #f1f5f9;
+
+  /* Text */
+  --color-primary: #0f172a;
+  --color-secondary: #475569;
+  --color-tertiary: #94a3b8;
+  --color-inverse: #ffffff;
+
+  /* Status */
+  --color-status-healthy: #10b981;
+  --color-status-running: #3b82f6;
+  --color-status-warning: #f59e0b;
+  --color-status-critical: #e11d48;
+  --color-status-stale: #94a3b8;
+  --color-status-unknown: #94a3b8;
+
+  /* Topology Node States */
+  --color-node-healthy: var(--color-status-healthy);
+  --color-node-running: var(--color-status-running);
+  --color-node-warning: var(--color-status-warning);
+  --color-node-critical: var(--color-status-critical);
+  --color-node-stale: var(--color-status-stale);
+  --color-node-bg-default: var(--color-surface);
+  --color-node-border: var(--color-border-default);
+
+  /* Interactive */
+  --color-interactive: #2563eb;
+  --color-interactive-hover: #1d4ed8;
+  --color-border-default: #e2e8f0;
+  --color-border-focus: #2563eb;
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+}
+
+@layer base {
+  :root {
+    --background: var(--color-canvas);
+    --foreground: var(--color-primary);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
